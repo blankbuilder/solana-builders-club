@@ -1,0 +1,78 @@
+---
+import { siteConfig } from '../config'
+import { getMembers } from '../lib/members'
+import BaseLayout from '../layouts/BaseLayout.astro'
+import Header from '../components/Header.astro'
+import MemberCard from '../components/MemberCard.astro'
+import XIcon from '../components/icons/XIcon.astro'
+
+const members = getMembers()
+---
+
+<BaseLayout title={siteConfig.name} description={siteConfig.description}>
+  <div class="h-full flex flex-col p-6 md:p-12">
+    <Header />
+
+    <main class="flex-1 flex items-center">
+      <div class="w-full max-w-5xl">
+        <h1
+          class="text-3xl md:text-5xl lg:text-6xl font-medium tracking-tight leading-tight mb-12 animate-fade-in delay-100"
+          style="font-family: var(--font-family-display);"
+        >
+          <span class="text-[--color-foreground]">Solana</span>
+          <span class="gradient-text">Builders</span>
+          <span class="text-[--color-foreground]">Club</span>
+        </h1>
+
+        <p
+          class="text-sm text-[--color-subtle] max-w-lg leading-relaxed mb-12 animate-fade-in delay-200"
+        >
+          {siteConfig.description}
+        </p>
+
+        <div class="mb-12 animate-fade-in delay-200">
+          <p class="text-xs text-[--color-muted] uppercase tracking-widest mb-4">
+            Our members are
+          </p>
+          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+            {members.map((member) => <MemberCard member={member} />)}
+          </div>
+        </div>
+
+        <div class="mb-20 animate-fade-in delay-300">
+          <p class="text-xs text-[--color-muted] uppercase tracking-widest mb-4">
+            Weekly Spaces
+          </p>
+          <p class="text-sm text-[--color-subtle] max-w-lg leading-relaxed mb-4">
+            We organize weekly X Spaces. We talk about Solana, the market,
+            entrepreneurship, dev, and many other topics.
+          </p>
+          <p class="text-sm text-[--color-subtle] max-w-lg leading-relaxed">
+            Interested? Follow <a
+              href={siteConfig.social.x}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-[--color-accent] hover:underline">@blankdotbuild</a
+            > and contact us to check availabilities.
+          </p>
+        </div>
+
+        <div class="animate-fade-in delay-400">
+          <p class="text-xs text-[--color-muted] mb-3">
+            Want to join our Telegram chat? This community is hosted by Blank.
+            Send us a DM
+          </p>
+          <a
+            href={siteConfig.social.x}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="cta-link text-sm"
+          >
+            <XIcon />
+            @blankdotbuild
+          </a>
+        </div>
+      </div>
+    </main>
+  </div>
+</BaseLayout>
