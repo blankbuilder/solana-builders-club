@@ -2,7 +2,7 @@
 
 @theme {
   --font-family-sans: 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
-  --font-family-display: 'Inter', system-ui, sans-serif;
+  --font-family-display: 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
 
   --color-bg: #000000;
   --color-surface: #0a0a0a;
