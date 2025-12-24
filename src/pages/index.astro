@@ -10,10 +10,10 @@ const members = getMembers()
 ---
 
 <BaseLayout title={siteConfig.name} description={siteConfig.description}>
-  <div class="h-full flex flex-col p-6 md:p-12">
+  <div class="min-h-screen flex flex-col p-6 md:p-12">
     <Header />
 
-    <main class="flex-1 flex items-center">
+    <main class="flex-1 flex items-start md:items-center pt-12 md:pt-0 pb-12">
       <div class="w-full max-w-5xl">
         <h1
           class="text-3xl md:text-5xl lg:text-6xl font-medium tracking-tight leading-tight mb-12 animate-fade-in delay-100"
