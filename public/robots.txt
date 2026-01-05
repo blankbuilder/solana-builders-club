@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+Allow: /og-image.png
+Allow: /og-image.webp
+Allow: /favicon.svg
+Allow: /logo.svg
+
+Disallow: /.astro
+Disallow: /node_modules
+
+Sitemap: https://solanabuilders.club/sitemap.xml

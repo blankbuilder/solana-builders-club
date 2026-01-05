@@ -5,7 +5,9 @@ export interface Member {
 
 export interface SiteConfig {
   name: string
+  title: string
   description: string
+  metaDescription: string
   social: {
     x: string
   }
