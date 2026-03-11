@@ -15,6 +15,7 @@
   "dependencies": {
     "@fontsource/inter": "^5.2.8",
     "@fontsource/jetbrains-mono": "^5.2.8",
+    "@plausible-analytics/tracker": "^0.4.4",
     "astro": "^5.16.15",
     "tailwindcss": "^4.1.18"
   },

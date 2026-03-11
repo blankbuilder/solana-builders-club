@@ -15,10 +15,11 @@ interface Props {
 
 const { title, description, ogImage = '/og-image.png' } = Astro.props
 const canonicalURL = new URL(Astro.url.pathname, Astro.site)
+const siteDomain = Astro.site?.hostname ?? canonicalURL.hostname
 ---
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-site-domain={siteDomain}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -48,6 +49,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site)
 
     <!-- Tally Popup Widget -->
     <script async src="https://tally.so/widgets/embed.js"></script>
+    <script src="../scripts/plausible.ts"></script>
   </head>
   <body class="min-h-screen overflow-auto">
     <slot />
