@@ -2,11 +2,11 @@ import type { SiteConfig } from './types';
 
 export const siteConfig: SiteConfig = {
   name: 'Solana Builders Club',
-  title: 'Solana Builders Club | Exclusive Web3 Developer Community',
+  title: 'Solana Builders Club | Solana Founder & Developer Community',
   description:
-    'A private Telegram community of builders, developers, and creators shaping the future of Solana.',
+    "A private community for Solana founders, developers, and builders. Share what you're building, learn from other teams, and connect across the ecosystem.",
   metaDescription:
-    'Join the exclusive Solana Builders Club: a Web3 network for developers & creators. Weekly Spaces, insider insights, and an invite-only community. Start building today.',
+    'Solana Builders Club is a private community for Solana founders, developers, and builders. Join weekly X Spaces, share your work, and connect with other teams.',
   social: {
     x: 'https://x.com/blankdotbuild',
   },

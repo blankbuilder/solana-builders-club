@@ -1,0 +1,24 @@
+{
+  "name": "Solana Builders Club",
+  "short_name": "SBC",
+  "icons": [
+    {
+      "src": "/favicon-48x48.png",
+      "sizes": "48x48",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ],
+  "theme_color": "#050810",
+  "background_color": "#050810",
+  "display": "standalone"
+}

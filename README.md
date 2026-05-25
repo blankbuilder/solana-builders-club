@@ -1,6 +1,6 @@
 # Solana Builders Club
 
-A private Telegram community of builders, developers, and creators shaping the future of Solana.
+A private network for Solana builders, developers, and creators sharing ideas, market insight, and opportunities.
 
 ## Tech Stack
 
@@ -46,6 +46,7 @@ src/
 public/
 ├── members/        # Member logo images
 ├── favicon.svg     # Site favicon
+├── favicon.ico     # Search and browser favicon fallback
 └── logo.svg        # Site logo
 ```
 

@@ -2,16 +2,22 @@
 import { siteConfig } from '../config'
 import { getMembers } from '../lib/members'
 import BaseLayout from '../layouts/BaseLayout.astro'
-import Header from '../components/Header.astro'
 import MemberCard from '../components/MemberCard.astro'
-import XIcon from '../components/icons/XIcon.astro'
 
 const members = getMembers()
 ---
 
 <BaseLayout title={siteConfig.title} description={siteConfig.metaDescription}>
   <div class="min-h-screen flex flex-col p-6 md:p-12">
-    <Header />
+    <header class="flex justify-end animate-fade-in">
+      <button
+        data-tally-open="zx7AAk"
+        data-tally-emoji-animation="wave"
+        class="text-[10px] md:text-xs text-[--color-muted] uppercase tracking-widest bg-transparent border-0 cursor-pointer hover:text-[--color-foreground] transition-colors"
+      >
+        Join waitlist
+      </button>
+    </header>
 
     <main class="flex-1 flex items-start md:items-center pt-12 md:pt-0 pb-12">
       <div class="w-full max-w-5xl">
@@ -47,20 +53,12 @@ const members = getMembers()
             We organize weekly X Spaces. We talk about Solana, the market,
             entrepreneurship, dev, and many other topics.
           </p>
-          <p class="text-sm text-[--color-subtle] max-w-lg leading-relaxed">
-            Interested? Follow <a
-              href={siteConfig.social.x}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="text-[--color-accent] hover:underline">@blankdotbuild</a
-            > and contact us to check availabilities.
-          </p>
         </div>
 
         <div class="w-full md:w-96 h-px bg-white/20 mb-4 animate-fade-in delay-400"></div>
         <div class="animate-fade-in delay-400">
           <p class="text-xs text-[--color-muted] mb-3">
-            Want to join our Telegram chat? This community is hosted by Blank.
+            Want to join the private community? It is hosted by Blank.
           </p>
           <button
             data-tally-open="zx7AAk"

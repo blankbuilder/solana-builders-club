@@ -24,7 +24,12 @@ const siteDomain = Astro.site?.hostname ?? canonicalURL.hostname
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
+    <link rel="icon" type="image/x-icon" sizes="48x48" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png" />
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
     <link rel="canonical" href={canonicalURL} />
 
     <!-- Open Graph / Facebook -->
@@ -48,7 +53,7 @@ const siteDomain = Astro.site?.hostname ?? canonicalURL.hostname
     <ClientRouter />
 
     <!-- Tally Popup Widget -->
-    <script async src="https://tally.so/widgets/embed.js"></script>
+    <script is:inline async src="https://tally.so/widgets/embed.js"></script>
     <script src="../scripts/plausible.ts"></script>
   </head>
   <body class="min-h-screen overflow-auto">
