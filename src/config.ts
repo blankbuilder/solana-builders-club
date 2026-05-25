@@ -8,7 +8,8 @@ export const siteConfig: SiteConfig = {
   metaDescription:
     'Solana Builders Club is a private community for Solana founders, developers, and builders. Join weekly X Spaces, share your work, and connect with other teams.',
   social: {
-    x: 'https://x.com/blankdotbuild',
+    x: 'https://x.com/Solbuildersclub',
+    xHandle: '@Solbuildersclub',
   },
 };
 

@@ -13,4 +13,4 @@ Allow: /logo.svg
 Disallow: /.astro
 Disallow: /node_modules
 
-Sitemap: https://solanabuilders.club/sitemap.xml
+Sitemap: https://solanabuilders.club/sitemap-index.xml

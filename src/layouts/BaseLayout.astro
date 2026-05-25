@@ -1,5 +1,6 @@
 ---
 import { ClientRouter } from 'astro:transitions'
+import { siteConfig } from '../config'
 import '@fontsource/inter/400.css'
 import '@fontsource/inter/500.css'
 import '@fontsource/inter/600.css'
@@ -16,6 +17,28 @@ interface Props {
 const { title, description, ogImage = '/og-image.png' } = Astro.props
 const canonicalURL = new URL(Astro.url.pathname, Astro.site)
 const siteDomain = Astro.site?.hostname ?? canonicalURL.hostname
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Organization',
+      '@id': `${Astro.site}#organization`,
+      name: siteConfig.name,
+      url: Astro.site?.toString(),
+      logo: new URL('/logo.svg', Astro.site).toString(),
+      sameAs: [siteConfig.social.x],
+    },
+    {
+      '@type': 'WebSite',
+      '@id': `${Astro.site}#website`,
+      url: Astro.site?.toString(),
+      name: siteConfig.name,
+      description: siteConfig.metaDescription,
+      publisher: { '@id': `${Astro.site}#organization` },
+    },
+  ],
+}
 ---
 
 <!DOCTYPE html>
@@ -47,9 +70,10 @@ const siteDomain = Astro.site?.hostname ?? canonicalURL.hostname
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={new URL(ogImage, Astro.site)} />
-    <meta name="twitter:site" content="@blankdotbuild" />
+    <meta name="twitter:site" content={siteConfig.social.xHandle} />
 
     <title>{title}</title>
+    <script type="application/ld+json" is:inline set:html={JSON.stringify(structuredData)} />
     <ClientRouter />
 
     <!-- Tally Popup Widget -->

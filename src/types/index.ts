@@ -10,5 +10,6 @@ export interface SiteConfig {
   metaDescription: string
   social: {
     x: string
+    xHandle: string
   }
 }
