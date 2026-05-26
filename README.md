@@ -92,9 +92,10 @@ The migration runner applies pending SQL files from `db/migrations/`, records th
 DATABASE_URL="postgresql://..." npm run db:migrate
 ```
 
-Production migrations run automatically on pushes to `main` through GitHub Actions. Add the
-production Neon URL as the GitHub repository secret `DATABASE_URL`. Vercel also runs
-`npm run db:migrate:production` before the production build, which skips previews and local builds.
+Production migrations run automatically during Vercel production deploys. Add the production
+Neon URL as the Vercel Production environment variable `DATABASE_URL`. Vercel runs
+`npm run db:migrate:production` before the production build, and that command skips preview and
+local builds.
 
 ## Telegram Membership Gate
 
