@@ -128,75 +128,71 @@ async function AdminPerksContent({
                   </p>
                 </div>
               )}
-              <div className="overflow-x-auto border-[0.5px] border-white/20 bg-[--color-surface]">
-                <table className="w-full min-w-[1000px] border-collapse text-left text-sm">
-                  <thead>
-                    <tr className="border-b-[0.5px] border-white/20 text-[10px] uppercase tracking-widest text-[--color-subtle] font-mono bg-white/[0.02]">
-                      <th className="p-4 font-normal">Project</th>
-                      <th className="p-4 font-normal">Perk</th>
-                      <th className="p-4 font-normal">Contact</th>
-                      <th className="p-4 font-normal">Status</th>
-                      <th className="p-4 font-normal">Featured</th>
-                      <th className="p-4 font-normal">Submitted</th>
-                      <th className="p-4 font-normal text-right">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {processedPerks.map((perk) => (
-                      <tr key={perk.id} className="group border-b-[0.5px] border-white/20 last:border-b-0 hover:bg-white/[0.02] transition-colors">
-                        <td className="p-4 align-middle">
-                          <div className="flex items-center gap-3">
-                            {perk.logoDataUrl ? (
-                              <img
-                                src={perk.logoDataUrl}
-                                alt={`${perk.projectName} logo`}
-                                className="h-8 w-8 flex-shrink-0 border-[0.5px] border-white/20 bg-[--color-bg] object-contain p-1"
-                              />
-                            ) : (
-                              <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center border-[0.5px] border-white/20 bg-[--color-bg] text-[8px] uppercase tracking-widest text-[--color-muted] font-mono">
-                                N/A
-                              </div>
-                            )}
-                            <div>
-                              <p className="font-medium text-[--color-foreground]">{perk.projectName}</p>
-                              <a href={perk.projectWebsite} target="_blank" rel="noopener noreferrer" className="mt-0.5 text-[11px] text-[--color-muted] hover:text-[--color-subtle] transition-colors inline-block font-mono">
-                                {perk.projectWebsite.replace(/^https?:\/\//, '').replace(/\/$/, '')}
-                              </a>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="p-4 align-middle max-w-[400px]">
-                          <Link href={`/admin/perks/${perk.id}`} className="text-[--color-foreground] hover:text-[--color-subtle] transition-colors font-medium">
-                            {perk.offerTitle}
-                          </Link>
-                          <p className="mt-0.5 text-[11px] text-[--color-muted]">{perk.offerTerms}</p>
-                        </td>
-                        <td className="p-4 text-[--color-subtle] font-mono text-[11px] align-middle">
-                          <a href={`https://t.me/${perk.telegramUsername.replace('@', '')}`} target="_blank" rel="noopener noreferrer" className="hover:text-[--color-foreground] transition-colors">
-                            {perk.telegramUsername}
-                          </a>
-                        </td>
-                        <td className="p-4 align-middle">
-                          <StatusBadge status={perk.status} />
-                        </td>
-                        <td className="p-4 align-middle">
-                          <FeatureButton perk={perk} />
-                        </td>
-                        <td className="p-4 text-[--color-subtle] font-mono text-[11px] align-middle whitespace-nowrap">
-                          {formatDate(perk.createdAt)}
-                        </td>
-                        <td className="p-4 align-middle text-right">
-                          <div className="flex flex-wrap items-center justify-end gap-2">
-                            <StatusButton perk={perk} status="approved" label="Approve" />
-                            <StatusButton perk={perk} status="rejected" label="Reject" />
-                            <StatusButton perk={perk} status="paused" label="Pause" />
-                            <StatusButton perk={perk} status="archived" label="Archive" />
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+              <div className="border-[0.5px] border-white/20 bg-[--color-surface] divide-y divide-white/[0.15]">
+                {processedPerks.map((perk) => (
+                  <div key={perk.id} className="group relative grid grid-cols-1 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,2.5fr)_minmax(0,1fr)_auto] items-center gap-x-8 gap-y-6 px-6 py-6 hover:bg-white/[0.02] transition-colors">
+                    
+                    {/* Status badge on border */}
+                    <div className="absolute top-0 right-6 -translate-y-1/2 z-10">
+                      <StatusBadge status={perk.status} />
+                    </div>
+
+                    {/* Identity: logo + project + URL */}
+                    <div className="flex items-center gap-4 min-w-0">
+                      {perk.logoDataUrl ? (
+                        <div className="relative flex h-12 w-12 flex-shrink-0 items-center justify-center overflow-hidden border-[0.5px] border-white/20 bg-[--color-bg] p-1.5 rounded-sm">
+                          <img
+                            src={perk.logoDataUrl}
+                            alt={`${perk.projectName} logo`}
+                            className="h-full w-full object-contain"
+                          />
+                        </div>
+                      ) : (
+                        <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center border-[0.5px] border-white/20 bg-[--color-bg] text-[9px] uppercase tracking-widest text-[--color-muted] font-mono rounded-sm">
+                          N/A
+                        </div>
+                      )}
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-2">
+                          <p className="font-semibold text-[--color-foreground] text-sm leading-none truncate">{perk.projectName}</p>
+                          {perk.featured && (
+                            <span className="text-[--color-accent] text-xs leading-none" title="Featured">★</span>
+                          )}
+                        </div>
+                        <a href={perk.projectWebsite} target="_blank" rel="noopener noreferrer" className="mt-1.5 text-[11px] text-[--color-subtle] hover:text-[--color-foreground] transition-colors block font-mono truncate">
+                          {perk.projectWebsite.replace(/^https?:\/\//, '').replace(/\/$/, '')}
+                        </a>
+                      </div>
+                    </div>
+
+                    {/* Perk title + terms */}
+                    <div className="min-w-0 flex flex-col justify-center">
+                      <Link href={`/admin/perks/${perk.id}`} className="text-[--color-foreground] hover:text-[--color-subtle] transition-colors font-semibold text-sm leading-tight block truncate">
+                        {perk.offerTitle}
+                      </Link>
+                      <p className="mt-1.5 text-xs text-[--color-muted] leading-relaxed line-clamp-2">{perk.offerTerms}</p>
+                    </div>
+
+                    {/* Meta column: contact + date */}
+                    <div className="flex flex-col items-start min-w-0 text-[11px] font-mono">
+                      <div className="flex flex-col gap-0.5 text-[--color-subtle]">
+                        <a href={`https://t.me/${perk.telegramUsername.replace('@', '')}`} target="_blank" rel="noopener noreferrer" className="hover:text-[--color-foreground] transition-colors truncate">
+                          {perk.telegramUsername}
+                        </a>
+                        <span className="text-[--color-muted] whitespace-nowrap">{formatDate(perk.createdAt)}</span>
+                      </div>
+                    </div>
+
+                    {/* Actions */}
+                    <div className="flex flex-wrap items-center justify-end gap-2 lg:ml-auto">
+                      <FeatureButton perk={perk} />
+                      <StatusButton perk={perk} status="approved" label="Approve" />
+                      <StatusButton perk={perk} status="rejected" label="Reject" />
+                      <StatusButton perk={perk} status="paused" label="Pause" />
+                      <StatusButton perk={perk} status="archived" label="Archive" />
+                    </div>
+                  </div>
+                ))}
               </div>
             </section>
           )}
@@ -302,15 +298,15 @@ function DetailBlock({ label, children }: { label: string; children: React.React
 function StatusBadge({ status }: { status: PerkStatus }) {
   const className =
     status === 'approved'
-      ? 'border-[--color-accent-secondary] text-[--color-accent-secondary] bg-[--color-accent-secondary]/10'
+      ? 'border-transparent bg-white text-black font-semibold'
       : status === 'submitted'
-        ? 'border-[--color-warning] text-[--color-warning] bg-[--color-warning]/10'
+        ? 'border-transparent bg-[--color-warning] text-black font-semibold'
         : status === 'rejected'
-          ? 'border-[--color-error] text-[--color-error] bg-[--color-error]/10'
-          : 'border-white/20 text-[--color-subtle]'
+          ? 'border-transparent bg-[--color-error] text-white font-semibold'
+          : 'border-transparent bg-white/20 text-white font-semibold'
 
   return (
-    <span className={`border-[0.5px] px-2 py-1 text-[9px] uppercase tracking-widest font-mono ${className}`}>
+    <span className={`border-[0.5px] px-2.5 py-1 text-[9px] uppercase tracking-widest font-mono rounded-sm ${className}`}>
       {status}
     </span>
   )
@@ -321,7 +317,7 @@ function FeatureButton({ perk }: { perk: Perk }) {
     <form action={setPerkFeaturedAction}>
       <input name="id" type="hidden" value={perk.id} />
       <input name="featured" type="hidden" value={String(!perk.featured)} />
-      <button className={`cursor-pointer border-[0.5px] px-2 py-1 text-[9px] uppercase tracking-widest transition-colors font-mono rounded-sm ${perk.featured ? 'border-[--color-accent] text-[--color-accent] bg-[--color-accent]/10 hover:bg-[--color-accent]/20' : 'border-white/20 bg-[--color-bg] text-[--color-subtle] hover:border-white/50 hover:text-[--color-foreground]'}`}>
+      <button className={`cursor-pointer border-[0.5px] px-2.5 py-1.5 text-[9px] uppercase tracking-widest transition-colors font-mono rounded-sm ${perk.featured ? 'border-[--color-accent] text-[--color-accent] bg-[--color-accent]/10 hover:bg-[--color-accent]/20' : 'border-white/20 bg-transparent text-[--color-subtle] hover:border-white/40 hover:text-[--color-foreground] hover:bg-white/[0.02]'}`}>
         {perk.featured ? '★ Featured' : 'Feature'}
       </button>
     </form>
@@ -344,7 +340,7 @@ function StatusButton({
       <input name="id" type="hidden" value={perk.id} />
       <input name="status" type="hidden" value={status} />
       <button
-        className="cursor-pointer border-[0.5px] border-white/20 bg-[--color-bg] px-2 py-1 text-[9px] uppercase tracking-widest text-[--color-subtle] transition-colors hover:border-white/50 hover:text-[--color-foreground] font-mono rounded-sm"
+        className="cursor-pointer border-[0.5px] border-white/20 bg-transparent px-2.5 py-1.5 text-[9px] uppercase tracking-widest text-[--color-subtle] transition-colors hover:border-white/40 hover:text-[--color-foreground] hover:bg-white/[0.02] font-mono rounded-sm"
       >
         {label}
       </button>
