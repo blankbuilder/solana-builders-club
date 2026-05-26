@@ -152,9 +152,9 @@ function SpacesSection() {
       <div className="flex-1 max-w-2xl animate-fade-in">
         <div className="mb-8 flex items-center gap-3 text-[10px] font-mono tracking-widest uppercase text-[--color-subtle]">
           <span className="text-[--color-warning]">Share</span>
-          <span className="text-white/20">//</span>
+          <span className="text-white/20">{'//'}</span>
           <span>Learn</span>
-          <span className="text-white/20">//</span>
+          <span className="text-white/20">{'//'}</span>
         </div>
         <h2
           className="mb-6 text-3xl font-semibold tracking-tight text-[--color-foreground] md:text-4xl lg:text-5xl leading-[1.1] text-balance"
@@ -222,9 +222,9 @@ function PerksSection() {
       <div className="flex-1 max-w-2xl animate-fade-in">
         <div className="mb-8 flex items-center gap-3 text-[10px] font-mono tracking-widest uppercase text-[--color-subtle]">
           <span className="text-[--color-accent-secondary]">Ecosystem</span>
-          <span className="text-white/20">//</span>
+          <span className="text-white/20">{'//'}</span>
           <span>Member Deals</span>
-          <span className="text-white/20">//</span>
+          <span className="text-white/20">{'//'}</span>
         </div>
         <h2
           className="mb-6 text-3xl font-semibold tracking-tight text-[--color-foreground] md:text-4xl lg:text-5xl leading-[1.1]"

@@ -1,6 +1,4 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
-import { siteConfig } from '@/config'
 import { getApprovedPerks, isPerksDatabaseConfigured } from '@/lib/perks/queries'
 import { getCurrentTelegramSession } from '@/lib/telegram/session'
 import type { Perk } from '@/types'
@@ -52,9 +50,9 @@ export default async function PerksPage({ searchParams }: PageProps) {
             <div className="animate-fade-in">
               <div className="mb-8 flex items-center gap-3 text-[10px] font-mono tracking-widest uppercase text-[--color-subtle]">
                 <span className="text-[--color-accent-secondary]">Ecosystem</span>
-                <span className="text-white/20">//</span>
+                <span className="text-white/20">{'//'}</span>
                 <span>Member Deals</span>
-                <span className="text-white/20">//</span>
+                <span className="text-white/20">{'//'}</span>
               </div>
               <h1
                 className="mb-6 max-w-3xl text-4xl leading-[1.1] font-semibold tracking-tight md:text-5xl lg:text-6xl"
