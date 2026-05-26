@@ -41,7 +41,7 @@ export function Header() {
 
 export function SectionHeader({ current, total, title }: { current: string, total?: string, title: string }) {
   return (
-    <div className="w-full flex items-center px-6 py-3 border-b-[0.5px] border-white/10 text-[10px] font-mono tracking-widest uppercase text-[--color-subtle]">
+    <div className="w-full flex items-center px-6 py-3 border-b-[0.5px] border-white/20 text-[10px] font-mono tracking-widest uppercase text-[--color-subtle]">
       <span className="text-white/20 mr-2">[</span>
       <span className="text-[--color-warning]">{current}</span>
       {total && <span className="mx-2 text-white/20">/</span>}
@@ -142,14 +142,14 @@ function FooterLink({
 export function PageWrapper({ children, topBanner }: { children: React.ReactNode, topBanner?: React.ReactNode }) {
   return (
     <div className="relative flex min-h-screen flex-col font-sans overflow-x-clip">
-      <div className="mx-auto w-full max-w-6xl sm:border-x-[0.5px] border-white/10 flex flex-col flex-1 relative">
+      <div className="mx-auto w-full max-w-6xl sm:border-x-[0.5px] border-white/20 flex flex-col flex-1 relative">
         {topBanner && (
-          <div className="w-full border-b-[0.5px] border-white/10 relative">
+          <div className="w-full border-b-[0.5px] border-white/20 relative">
             {topBanner}
           </div>
         )}
 
-        <div className="w-full border-b-[0.5px] border-white/10 bg-[--color-bg]/80 backdrop-blur-md sticky top-0 z-50">
+        <div className="w-full border-b-[0.5px] border-white/20 bg-[--color-bg]/80 backdrop-blur-md sticky top-0 z-50">
           <Header />
         </div>
         
@@ -157,7 +157,7 @@ export function PageWrapper({ children, topBanner }: { children: React.ReactNode
           {children}
         </main>
 
-        <div className="w-full border-t-[0.5px] border-white/10 relative">
+        <div className="w-full border-t-[0.5px] border-white/20 relative">
           <Footer />
         </div>
         

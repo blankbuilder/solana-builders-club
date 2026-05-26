@@ -32,7 +32,7 @@ export default async function AdminPerksPage({ searchParams }: PageProps) {
 
   return (
     <PageWrapper>
-      <div className="w-full relative border-b-[0.5px] border-white/10 flex-1 flex flex-col">
+      <div className="w-full relative border-b-[0.5px] border-white/20 flex-1 flex flex-col">
         <SectionHeader current="ADMIN" title="PERK MODERATION" />
         
         <div className="px-6 py-12 md:py-16 mx-auto w-full max-w-7xl flex-1">
@@ -47,13 +47,6 @@ export default async function AdminPerksPage({ searchParams }: PageProps) {
                 Manage all partner perks submissions.
               </p>
             </div>
-            
-            <Link
-              href="/partners/perks/new"
-              className="btn-primary corner-brackets inline-flex text-xs"
-            >
-              Submit test perk
-            </Link>
           </div>
 
           {auth.status !== 'authorized' ? (
@@ -78,6 +71,8 @@ async function AdminPerksContent({
 }) {
   const perks = await getAdminPerks()
   const counts = countByStatus(perks)
+  const pendingPerks = perks.filter((perk) => perk.status === 'submitted')
+  const processedPerks = perks.filter((perk) => perk.status !== 'submitted')
 
   return (
     <>
@@ -87,7 +82,7 @@ async function AdminPerksContent({
       <div className="mb-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
         {(['submitted', 'approved', 'rejected', 'paused', 'archived'] satisfies PerkStatus[]).map(
           (status) => (
-            <div key={status} className="border-[0.5px] border-white/10 bg-[--color-surface] p-4 flex flex-col justify-between min-h-[100px]">
+            <div key={status} className="border-[0.5px] border-white/20 bg-[--color-surface] p-4 flex flex-col justify-between min-h-[100px]">
               <p className="text-[10px] uppercase tracking-widest text-[--color-subtle] font-mono">
                 {status}
               </p>
@@ -98,72 +93,238 @@ async function AdminPerksContent({
       </div>
 
       {perks.length === 0 ? (
-        <div className="border-[0.5px] border-white/10 bg-[--color-surface] p-6 text-sm text-[--color-subtle] font-mono text-center">
+        <div className="border-[0.5px] border-white/20 bg-[--color-surface] p-6 text-sm text-[--color-subtle] font-mono text-center">
           No partner perks have been submitted yet.
         </div>
       ) : (
-        <div className="overflow-x-auto border-[0.5px] border-white/10 bg-[--color-surface]">
-          <table className="w-full min-w-[980px] border-collapse text-left text-sm">
-            <thead>
-              <tr className="border-b-[0.5px] border-white/10 text-[10px] uppercase tracking-widest text-[--color-subtle] font-mono bg-white/[0.02]">
-                <th className="p-4 font-normal">Perk</th>
-                <th className="p-4 font-normal">Project</th>
-                <th className="p-4 font-normal">Contact</th>
-                <th className="p-4 font-normal">Status</th>
-                <th className="p-4 font-normal">Featured</th>
-                <th className="p-4 font-normal">Submitted</th>
-                <th className="p-4 font-normal">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {perks.map((perk) => (
-                <tr key={perk.id} className="border-b-[0.5px] border-white/10 last:border-b-0 hover:bg-white/[0.02] transition-colors">
-                  <td className="p-4 align-top">
-                    <Link href={`/admin/perks/${perk.id}`} className="text-[--color-foreground] hover:text-[--color-subtle] transition-colors font-medium">
-                      {perk.offerTitle}
-                    </Link>
-                    <p className="mt-2 text-xs text-[--color-muted] line-clamp-1 max-w-[200px]">{perk.offerTerms}</p>
-                  </td>
-                  <td className="p-4 text-[--color-subtle] align-top">
-                    <p className="font-medium text-[--color-foreground]">{perk.projectName}</p>
-                    <a href={perk.projectWebsite} target="_blank" rel="noopener noreferrer" className="mt-1 text-xs text-[--color-muted] hover:text-[--color-subtle] transition-colors inline-block">{perk.projectWebsite}</a>
-                  </td>
-                  <td className="p-4 text-[--color-subtle] font-mono text-xs align-top">
-                    {perk.telegramUsername}
-                  </td>
-                  <td className="p-4 align-top">
-                    <span className={`border-[0.5px] px-2 py-1 text-[9px] uppercase tracking-widest font-mono ${
-                      perk.status === 'approved' ? 'border-[--color-accent-secondary] text-[--color-accent-secondary] bg-[--color-accent-secondary]/10' :
-                      perk.status === 'submitted' ? 'border-[--color-warning] text-[--color-warning] bg-[--color-warning]/10' :
-                      'border-white/20 text-[--color-subtle]'
-                    }`}>
-                      {perk.status}
-                    </span>
-                  </td>
-                  <td className="p-4 text-[--color-subtle] font-mono text-xs align-top">{perk.featured ? 'Yes' : 'No'}</td>
-                  <td className="p-4 text-[--color-subtle] font-mono text-xs align-top whitespace-nowrap">{formatDate(perk.createdAt)}</td>
-                  <td className="p-4 align-top">
-                    <div className="flex flex-wrap gap-2">
-                      <StatusButton perk={perk} status="approved" label="Approve" />
-                      <StatusButton perk={perk} status="rejected" label="Reject" />
-                      <StatusButton perk={perk} status="paused" label="Pause" />
-                      <StatusButton perk={perk} status="archived" label="Archive" />
-                      <form action={setPerkFeaturedAction}>
-                        <input name="id" type="hidden" value={perk.id} />
-                        <input name="featured" type="hidden" value={String(!perk.featured)} />
-                        <button className="border-[0.5px] border-white/20 bg-[--color-bg] px-2 py-1 text-[10px] uppercase tracking-widest text-[--color-subtle] transition-colors hover:border-white/50 hover:text-[--color-foreground] font-mono">
-                          {perk.featured ? 'Unfeature' : 'Feature'}
-                        </button>
-                      </form>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <>
+          {pendingPerks.length > 0 && (
+            <section className="mb-12">
+              <div className="mb-6 flex items-baseline justify-between gap-4 border-b-[0.5px] border-white/20 pb-4">
+                <h2 className="text-[11px] uppercase tracking-widest text-[--color-warning] font-mono">
+                  Pending review &mdash; {pendingPerks.length}
+                </h2>
+                <p className="text-[10px] uppercase tracking-widest text-[--color-muted] font-mono">
+                  Full submission details
+                </p>
+              </div>
+              <div className="grid gap-6">
+                {pendingPerks.map((perk) => (
+                  <PendingPerkCard key={perk.id} perk={perk} />
+                ))}
+              </div>
+            </section>
+          )}
+
+          {processedPerks.length > 0 && (
+            <section>
+              {pendingPerks.length > 0 && (
+                <div className="mb-6 flex items-baseline justify-between gap-4 border-b-[0.5px] border-white/20 pb-4">
+                  <h2 className="text-[11px] uppercase tracking-widest text-[--color-subtle] font-mono">
+                    Processed &mdash; {processedPerks.length}
+                  </h2>
+                  <p className="text-[10px] uppercase tracking-widest text-[--color-muted] font-mono">
+                    Approved, rejected, paused, archived
+                  </p>
+                </div>
+              )}
+              <div className="overflow-x-auto border-[0.5px] border-white/20 bg-[--color-surface]">
+                <table className="w-full min-w-[1000px] border-collapse text-left text-sm">
+                  <thead>
+                    <tr className="border-b-[0.5px] border-white/20 text-[10px] uppercase tracking-widest text-[--color-subtle] font-mono bg-white/[0.02]">
+                      <th className="p-4 font-normal">Project</th>
+                      <th className="p-4 font-normal">Perk</th>
+                      <th className="p-4 font-normal">Contact</th>
+                      <th className="p-4 font-normal">Status</th>
+                      <th className="p-4 font-normal">Featured</th>
+                      <th className="p-4 font-normal">Submitted</th>
+                      <th className="p-4 font-normal text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {processedPerks.map((perk) => (
+                      <tr key={perk.id} className="group border-b-[0.5px] border-white/20 last:border-b-0 hover:bg-white/[0.02] transition-colors">
+                        <td className="p-4 align-middle">
+                          <div className="flex items-center gap-3">
+                            {perk.logoDataUrl ? (
+                              <img
+                                src={perk.logoDataUrl}
+                                alt={`${perk.projectName} logo`}
+                                className="h-8 w-8 flex-shrink-0 border-[0.5px] border-white/20 bg-[--color-bg] object-contain p-1"
+                              />
+                            ) : (
+                              <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center border-[0.5px] border-white/20 bg-[--color-bg] text-[8px] uppercase tracking-widest text-[--color-muted] font-mono">
+                                N/A
+                              </div>
+                            )}
+                            <div>
+                              <p className="font-medium text-[--color-foreground]">{perk.projectName}</p>
+                              <a href={perk.projectWebsite} target="_blank" rel="noopener noreferrer" className="mt-0.5 text-[11px] text-[--color-muted] hover:text-[--color-subtle] transition-colors inline-block font-mono">
+                                {perk.projectWebsite.replace(/^https?:\/\//, '').replace(/\/$/, '')}
+                              </a>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="p-4 align-middle max-w-[400px]">
+                          <Link href={`/admin/perks/${perk.id}`} className="text-[--color-foreground] hover:text-[--color-subtle] transition-colors font-medium">
+                            {perk.offerTitle}
+                          </Link>
+                          <p className="mt-0.5 text-[11px] text-[--color-muted]">{perk.offerTerms}</p>
+                        </td>
+                        <td className="p-4 text-[--color-subtle] font-mono text-[11px] align-middle">
+                          <a href={`https://t.me/${perk.telegramUsername.replace('@', '')}`} target="_blank" rel="noopener noreferrer" className="hover:text-[--color-foreground] transition-colors">
+                            {perk.telegramUsername}
+                          </a>
+                        </td>
+                        <td className="p-4 align-middle">
+                          <StatusBadge status={perk.status} />
+                        </td>
+                        <td className="p-4 align-middle">
+                          <FeatureButton perk={perk} />
+                        </td>
+                        <td className="p-4 text-[--color-subtle] font-mono text-[11px] align-middle whitespace-nowrap">
+                          {formatDate(perk.createdAt)}
+                        </td>
+                        <td className="p-4 align-middle text-right">
+                          <div className="flex flex-wrap items-center justify-end gap-2">
+                            <StatusButton perk={perk} status="approved" label="Approve" />
+                            <StatusButton perk={perk} status="rejected" label="Reject" />
+                            <StatusButton perk={perk} status="paused" label="Pause" />
+                            <StatusButton perk={perk} status="archived" label="Archive" />
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </section>
+          )}
+        </>
       )}
     </>
+  )
+}
+
+function PendingPerkCard({ perk }: { perk: Perk }) {
+  return (
+    <article className="border-[0.5px] border-white/20 bg-[--color-surface]">
+      <header className="flex items-center gap-4 border-b-[0.5px] border-white/20 px-5 py-3">
+        {perk.logoDataUrl ? (
+          <img
+            src={perk.logoDataUrl}
+            alt={`${perk.projectName} logo`}
+            className="h-10 w-10 flex-shrink-0 border-[0.5px] border-white/20 bg-[--color-bg] object-contain p-1"
+          />
+        ) : (
+          <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center border-[0.5px] border-white/20 bg-[--color-bg] text-[8px] uppercase tracking-widest text-[--color-muted] font-mono">
+            N/A
+          </div>
+        )}
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+            <h3 className="truncate text-base font-semibold tracking-tight text-[--color-foreground]">
+              {perk.projectName}
+            </h3>
+            <StatusBadge status={perk.status} />
+            {perk.featured && (
+              <span className="border-[0.5px] border-[--color-accent] bg-[--color-accent]/10 px-1.5 py-0.5 text-[9px] uppercase tracking-widest text-[--color-accent] font-mono">
+                Featured
+              </span>
+            )}
+          </div>
+          <a
+            href={perk.projectWebsite}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-2 block truncate text-[11px] text-[--color-muted] hover:text-[--color-subtle] transition-colors font-mono"
+          >
+            {perk.projectWebsite}
+          </a>
+        </div>
+        <div className="flex-shrink-0 text-right text-[11px] text-[--color-subtle] font-mono leading-snug">
+          <p>{perk.telegramUsername}</p>
+          <p className="text-[--color-muted]">{formatDate(perk.createdAt)}</p>
+        </div>
+      </header>
+
+      <div className="grid gap-6 p-6 md:grid-cols-2">
+        <DetailBlock label="Project description">
+          <p className="whitespace-pre-wrap text-sm leading-relaxed text-[--color-subtle]">
+            {perk.projectDescription}
+          </p>
+        </DetailBlock>
+
+        <DetailBlock label="Offer">
+          <p className="text-sm font-semibold text-[--color-foreground]">{perk.offerTitle}</p>
+          <p className="mt-3 whitespace-pre-wrap text-sm leading-relaxed text-[--color-subtle]">
+            {perk.offerTerms}
+          </p>
+          {perk.offerCode && (
+            <div className="mt-4 inline-flex items-center gap-2 border-[0.5px] border-white/20 bg-[--color-bg] px-3 py-2">
+              <span className="text-[10px] uppercase tracking-widest text-[--color-muted] font-mono">Code</span>
+              <code className="text-sm text-[--color-foreground] font-mono">{perk.offerCode}</code>
+            </div>
+          )}
+        </DetailBlock>
+      </div>
+
+      <footer className="flex flex-wrap items-center justify-between gap-4 border-t-[0.5px] border-white/20 p-6">
+        <div className="flex flex-wrap gap-2">
+          <StatusButton perk={perk} status="approved" label="Approve" />
+          <StatusButton perk={perk} status="rejected" label="Reject" />
+          <StatusButton perk={perk} status="paused" label="Pause" />
+          <StatusButton perk={perk} status="archived" label="Archive" />
+          <FeatureButton perk={perk} />
+        </div>
+        <Link
+          href={`/admin/perks/${perk.id}`}
+          className="text-[10px] uppercase tracking-widest text-[--color-subtle] hover:text-[--color-foreground] transition-colors font-mono"
+        >
+          Edit details -&gt;
+        </Link>
+      </footer>
+    </article>
+  )
+}
+
+function DetailBlock({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div>
+      <p className="mb-3 text-[10px] uppercase tracking-widest text-[--color-muted] font-mono">
+        {label}
+      </p>
+      {children}
+    </div>
+  )
+}
+
+function StatusBadge({ status }: { status: PerkStatus }) {
+  const className =
+    status === 'approved'
+      ? 'border-[--color-accent-secondary] text-[--color-accent-secondary] bg-[--color-accent-secondary]/10'
+      : status === 'submitted'
+        ? 'border-[--color-warning] text-[--color-warning] bg-[--color-warning]/10'
+        : status === 'rejected'
+          ? 'border-[--color-error] text-[--color-error] bg-[--color-error]/10'
+          : 'border-white/20 text-[--color-subtle]'
+
+  return (
+    <span className={`border-[0.5px] px-2 py-1 text-[9px] uppercase tracking-widest font-mono ${className}`}>
+      {status}
+    </span>
+  )
+}
+
+function FeatureButton({ perk }: { perk: Perk }) {
+  return (
+    <form action={setPerkFeaturedAction}>
+      <input name="id" type="hidden" value={perk.id} />
+      <input name="featured" type="hidden" value={String(!perk.featured)} />
+      <button className={`cursor-pointer border-[0.5px] px-2 py-1 text-[9px] uppercase tracking-widest transition-colors font-mono rounded-sm ${perk.featured ? 'border-[--color-accent] text-[--color-accent] bg-[--color-accent]/10 hover:bg-[--color-accent]/20' : 'border-white/20 bg-[--color-bg] text-[--color-subtle] hover:border-white/50 hover:text-[--color-foreground]'}`}>
+        {perk.featured ? '★ Featured' : 'Feature'}
+      </button>
+    </form>
   )
 }
 
@@ -176,13 +337,14 @@ function StatusButton({
   status: 'approved' | 'rejected' | 'paused' | 'archived'
   label: string
 }) {
+  if (perk.status === status) return null
+
   return (
     <form action={setPerkStatusAction}>
       <input name="id" type="hidden" value={perk.id} />
       <input name="status" type="hidden" value={status} />
       <button
-        className="border-[0.5px] border-white/20 bg-[--color-bg] px-2 py-1 text-[10px] uppercase tracking-widest text-[--color-subtle] transition-colors hover:border-white/50 hover:text-[--color-foreground] disabled:cursor-not-allowed disabled:opacity-40 font-mono"
-        disabled={perk.status === status}
+        className="cursor-pointer border-[0.5px] border-white/20 bg-[--color-bg] px-2 py-1 text-[9px] uppercase tracking-widest text-[--color-subtle] transition-colors hover:border-white/50 hover:text-[--color-foreground] font-mono rounded-sm"
       >
         {label}
       </button>
@@ -193,7 +355,7 @@ function StatusButton({
 function AdminAccessState({ auth }: { auth: Awaited<ReturnType<typeof getAdminAuth>> }) {
   if (auth.status === 'anonymous') {
     return (
-      <div className="border-[0.5px] border-white/10 bg-[--color-surface] p-6 max-w-md">
+      <div className="border-[0.5px] border-white/20 bg-[--color-surface] p-6 max-w-md">
         <p className="mb-6 text-sm leading-relaxed text-[--color-subtle]">
           Telegram admin verification is required.
         </p>

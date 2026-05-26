@@ -44,7 +44,7 @@ export default async function PerksPage({ searchParams }: PageProps) {
 
   return (
     <PageWrapper>
-      <div className="w-full relative border-b-[0.5px] border-white/10 flex-1 flex flex-col">
+      <div className="w-full relative border-b-[0.5px] border-white/20 flex-1 flex flex-col">
         <SectionHeader current="01" total="01" title="PERKS" />
         
         <div className="px-6 py-12 md:py-16 mx-auto w-full flex-1">
@@ -67,9 +67,9 @@ export default async function PerksPage({ searchParams }: PageProps) {
               </p>
             </div>
 
-            <aside className="border-[0.5px] border-white/10 bg-[--color-bg] p-1 relative overflow-hidden group animate-fade-in delay-200">
-              <div className="border-[0.5px] border-dashed border-white/10 p-6 h-full flex flex-col bg-[--color-surface]/50 transition-colors group-hover:bg-[--color-surface]">
-                <div className="mb-6 flex items-start justify-between border-b-[0.5px] border-white/10 pb-4">
+            <aside className="border-[0.5px] border-white/20 bg-[--color-bg] p-1 relative overflow-hidden group animate-fade-in delay-200">
+              <div className="border-[0.5px] border-dashed border-white/20 p-6 h-full flex flex-col bg-[--color-surface]/50 transition-colors group-hover:bg-[--color-surface]">
+                <div className="mb-6 flex items-start justify-between border-b-[0.5px] border-white/20 pb-4">
                   <div className="flex flex-col gap-1">
                     <span className="text-sm font-bold tracking-tight text-[--color-foreground]">ACCESS</span>
                   </div>
@@ -124,7 +124,7 @@ export default async function PerksPage({ searchParams }: PageProps) {
               `DATABASE_URL` is required before perks can be listed.
             </div>
           ) : perks.length === 0 ? (
-            <div className="border-[0.5px] border-white/10 bg-[--color-surface] p-6 text-sm leading-relaxed text-[--color-subtle] font-mono text-center">
+            <div className="border-[0.5px] border-white/20 bg-[--color-surface] p-6 text-sm leading-relaxed text-[--color-subtle] font-mono text-center">
               Partner perks are being reviewed. Approved offers will appear here.
             </div>
           ) : (
@@ -144,10 +144,10 @@ function PerkCard({ perk, isVerified }: { perk: Perk; isVerified: boolean }) {
   const terms = termsList(perk.offerTerms)
 
   return (
-    <article className="flex min-h-[320px] flex-col border-[0.5px] border-white/10 bg-gradient-to-br from-white/[0.04] to-transparent p-6 group transition-colors hover:border-white/20">
+    <article className="flex min-h-[320px] flex-col border-[0.5px] border-white/20 bg-gradient-to-br from-white/[0.04] to-transparent p-6 group transition-colors hover:border-white/20">
       <div className="mb-6 flex items-start justify-between gap-4">
         <div className="flex items-center gap-4">
-          <div className="flex h-12 w-12 items-center justify-center border-[0.5px] border-white/10 bg-[--color-bg]">
+          <div className="flex h-12 w-12 items-center justify-center border-[0.5px] border-white/20 bg-[--color-bg]">
             {perk.logoDataUrl ? (
               <img src={perk.logoDataUrl} alt="" className="h-7 w-7 object-contain opacity-80 filter grayscale group-hover:grayscale-0 transition-all duration-500" />
             ) : (
@@ -166,7 +166,7 @@ function PerkCard({ perk, isVerified }: { perk: Perk; isVerified: boolean }) {
             </a>
           </div>
         </div>
-        <span className="border-[0.5px] border-white/10 px-2 py-1 text-[9px] uppercase tracking-widest text-[--color-accent-secondary] bg-[--color-accent-secondary]/10">
+        <span className="border-[0.5px] border-white/20 px-2 py-1 text-[9px] uppercase tracking-widest text-[--color-accent-secondary] bg-[--color-accent-secondary]/10">
           Available
         </span>
       </div>
@@ -178,7 +178,7 @@ function PerkCard({ perk, isVerified }: { perk: Perk; isVerified: boolean }) {
         {perk.projectDescription}
       </p>
 
-      <div className="mt-auto border-t-[0.5px] border-white/10 pt-5">
+      <div className="mt-auto border-t-[0.5px] border-white/20 pt-5">
         <div className="mb-6 space-y-3">
           {terms.map((term, i) => (
             <p key={`${term}-${i}`} className="text-xs leading-relaxed text-[--color-muted] flex items-start gap-2">

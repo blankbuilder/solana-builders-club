@@ -23,7 +23,7 @@ export default async function NewPerkPage({ searchParams }: PageProps) {
 
   return (
     <PageWrapper>
-      <div className="w-full relative border-b-[0.5px] border-white/10 flex-1 flex flex-col">
+      <div className="w-full relative border-b-[0.5px] border-white/20 flex-1 flex flex-col">
         <SectionHeader current="01" total="01" title="SUBMIT PERK" />
         
         <div className="px-6 py-12 md:py-16 mx-auto w-full max-w-5xl flex-1">
@@ -47,7 +47,7 @@ export default async function NewPerkPage({ searchParams }: PageProps) {
                 <p className="text-sm leading-relaxed text-[--color-subtle] mb-6">
                   Offer a discount, free credits, or special access to our community of Solana founders and developers. All perks are manually reviewed before being listed.
                 </p>
-                <div className="border-[0.5px] border-white/10 bg-[--color-surface] p-6 text-sm text-[--color-subtle]">
+                <div className="border-[0.5px] border-white/20 bg-[--color-surface] p-6 text-sm text-[--color-subtle]">
                   <h3 className="font-bold text-[--color-foreground] mb-2 font-mono uppercase tracking-widest text-[10px]">What we look for:</h3>
                   <ul className="list-disc pl-4 space-y-2 mt-4">
                     <li>Exclusive deals not available to the general public</li>
@@ -58,14 +58,14 @@ export default async function NewPerkPage({ searchParams }: PageProps) {
               </div>
 
               {success && (
-                <div className="mb-8 border-[0.5px] border-[--color-accent-secondary] p-4 text-sm font-mono text-[--color-accent-secondary] bg-[--color-accent-secondary]/10">
+                <div className="form-alert-success mb-8 border-[0.5px] p-4 text-sm font-mono">
                   Perk submitted successfully! We will review it shortly.
                 </div>
               )}
             </div>
 
-            <aside className="border-[0.5px] border-white/10 bg-[--color-bg] p-1 relative group animate-fade-in delay-100">
-              <div className="border-[0.5px] border-dashed border-white/10 p-6 flex flex-col bg-[--color-surface]/50 transition-colors group-hover:bg-[--color-surface]">
+            <aside className="border-[0.5px] border-white/20 bg-[--color-bg] p-1 relative group animate-fade-in delay-100">
+              <div className="border-[0.5px] border-dashed border-white/20 p-6 flex flex-col bg-[--color-surface]/50 transition-colors group-hover:bg-[--color-surface]">
                 <PartnerPerkForm />
               </div>
             </aside>

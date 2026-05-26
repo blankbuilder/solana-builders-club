@@ -12,16 +12,16 @@ export default function HomePage() {
 
   return (
     <PageWrapper topBanner={<TopBanner />}>
-      <div className="w-full relative border-b-[0.5px] border-white/10">
+      <div className="w-full relative border-b-[0.5px] border-white/20">
         <Hero members={members} />
       </div>
 
-      <div className="w-full relative border-b-[0.5px] border-white/10">
+      <div className="w-full relative border-b-[0.5px] border-white/20">
         <SectionHeader current="01" total="03" title="SPACES" />
         <SpacesSection />
       </div>
       
-      <div className="w-full relative border-b-[0.5px] border-white/10">
+      <div className="w-full relative border-b-[0.5px] border-white/20">
         <SectionHeader current="02" total="03" title="PERKS" />
         <PerksSection />
       </div>
@@ -96,8 +96,8 @@ function Hero({ members }: { members: ReturnType<typeof getMembers> }) {
         </div>
       </div>
 
-      <div className="flex items-stretch overflow-hidden w-full h-[120px] sm:h-[140px] bg-transparent border-y-[0.5px] border-white/10 mt-auto mb-24 lg:mb-32">
-        <div className="flex-none flex items-center justify-center px-6 sm:px-8 border-r-[0.5px] border-white/10 w-[160px] sm:w-[240px] shrink-0 bg-[--color-bg] z-10 relative">
+      <div className="flex items-stretch overflow-hidden w-full h-[120px] sm:h-[140px] bg-transparent border-y-[0.5px] border-white/20 mt-auto mb-24 lg:mb-32">
+        <div className="flex-none flex items-center justify-center px-6 sm:px-8 border-r-[0.5px] border-white/20 w-[160px] sm:w-[240px] shrink-0 bg-[--color-bg] z-10 relative">
           <div className="flex flex-col text-xs sm:text-sm font-medium">
             <span className="text-[--color-foreground]">Our members</span>
             <span className="text-[--color-warning]">are part of</span>
@@ -112,7 +112,7 @@ function Hero({ members }: { members: ReturnType<typeof getMembers> }) {
             {duplicatedMembers.map((member, i) => (
               <div
                 key={`${member.name}-${i}`}
-                className="flex-none flex flex-col items-center justify-center w-[160px] sm:w-[200px] border-r-[0.5px] border-white/10 group relative overflow-hidden transition-colors bg-transparent h-[120px] sm:h-[140px] gap-3"
+                className="flex-none flex flex-col items-center justify-center w-[160px] sm:w-[200px] border-r-[0.5px] border-white/20 group relative overflow-hidden transition-colors bg-transparent h-[120px] sm:h-[140px] gap-3"
                 title={member.name}
               >
                 <PixelCanvas colors={MEMBER_PIXEL_COLORS} gap={8} speed={35} />
@@ -166,9 +166,9 @@ function SpacesSection() {
       </div>
 
       <div className="flex-1 w-full animate-fade-in delay-200">
-        <div className="border-[0.5px] border-white/10 bg-[--color-bg] p-1 relative overflow-hidden group">
-          <div className="border-[0.5px] border-dashed border-white/10 p-6 h-full flex flex-col bg-[--color-surface]/50 transition-colors group-hover:bg-[--color-surface]">
-            <div className="mb-6 flex items-start justify-between border-b-[0.5px] border-white/10 pb-4">
+        <div className="border-[0.5px] border-white/20 bg-[--color-bg] p-1 relative overflow-hidden group">
+          <div className="border-[0.5px] border-dashed border-white/20 p-6 h-full flex flex-col bg-[--color-surface]/50 transition-colors group-hover:bg-[--color-surface]">
+            <div className="mb-6 flex items-start justify-between border-b-[0.5px] border-white/20 pb-4">
               <div className="flex flex-col gap-1">
                 <span className="text-sm font-bold tracking-tight text-[--color-foreground]">SOLANA BUILDERS SPACE</span>
               </div>
@@ -231,7 +231,7 @@ function PerksSection() {
       </div>
 
       <div className="flex-1 w-full animate-fade-in delay-200">
-        <div className="grid grid-cols-2 border-[0.5px] border-white/10 relative">
+        <div className="grid grid-cols-2 border-[0.5px] border-white/20 relative">
           <div className="absolute top-1/2 left-0 right-0 h-px bg-white/10" />
           <div className="absolute left-1/2 top-0 bottom-0 w-px bg-white/10" />
           {[
@@ -240,7 +240,7 @@ function PerksSection() {
             { id: '03', name: 'Security Audits', val: 'Priority' },
             { id: '04', name: 'Ecosystem', val: 'Grants' },
           ].map((item) => (
-            <div key={item.id} className="p-6 lg:p-8 flex flex-col justify-between aspect-square group transition-all duration-500 relative overflow-hidden bg-gradient-to-br from-white/[0.04] to-transparent">
+            <div key={item.id} className="p-6 lg:p-8 flex flex-col justify-between aspect-square group transition-all duration-500 relative overflow-hidden bg-gradient-to-br from-white/[0.08] to-white/[0.02]">
               <span className="text-[10px] font-mono text-white/20 group-hover:text-[--color-warning] transition-colors relative z-10">[{item.id}]</span>
               <div className="relative z-10 transform group-hover:-translate-y-1 transition-transform duration-500">
                 <div className="text-sm font-medium text-[--color-foreground] mb-1 group-hover:text-white transition-colors duration-500">{item.name}</div>

@@ -39,7 +39,7 @@ export default async function ClaimPerkPage({ params }: PageProps) {
 
   return (
     <PageWrapper>
-      <div className="w-full relative border-b-[0.5px] border-white/10 flex-1 flex flex-col">
+      <div className="w-full relative border-b-[0.5px] border-white/20 flex-1 flex flex-col">
         <SectionHeader current="01" total="01" title="CLAIM PERK" />
         
         <div className="px-6 py-12 md:py-16 mx-auto w-full max-w-5xl flex-1">
@@ -56,12 +56,12 @@ export default async function ClaimPerkPage({ params }: PageProps) {
 
           <div className="grid gap-12 lg:grid-cols-[1fr_400px]">
             <div className="animate-fade-in">
-              <div className="mb-8 flex items-center gap-4 border-b-[0.5px] border-white/10 pb-8">
+              <div className="mb-8 flex items-center gap-4 border-b-[0.5px] border-white/20 pb-8">
                 {perk.logoDataUrl && (
                   <img
                     src={perk.logoDataUrl}
                     alt={`${perk.projectName} logo`}
-                    className="h-16 w-16 bg-white/5 object-contain p-2 border-[0.5px] border-white/10"
+                    className="h-16 w-16 bg-white/5 object-contain p-2 border-[0.5px] border-white/20"
                     loading="lazy"
                   />
                 )}
@@ -80,7 +80,7 @@ export default async function ClaimPerkPage({ params }: PageProps) {
                 </div>
               </div>
 
-              <div className="mb-8 border-b-[0.5px] border-white/10 pb-8">
+              <div className="mb-8 border-b-[0.5px] border-white/20 pb-8">
                 <h3 className="text-sm font-bold tracking-tight uppercase font-mono mb-4 text-[--color-foreground]">Description</h3>
                 <p className="text-base leading-relaxed text-[--color-subtle]">
                   {perk.projectDescription}
@@ -97,9 +97,9 @@ export default async function ClaimPerkPage({ params }: PageProps) {
               </div>
             </div>
 
-            <aside className="border-[0.5px] border-white/10 bg-[--color-bg] p-1 relative overflow-hidden group animate-fade-in delay-100 h-fit">
-              <div className="border-[0.5px] border-dashed border-white/10 p-6 flex flex-col bg-[--color-surface]/50 transition-colors group-hover:bg-[--color-surface]">
-                <div className="mb-6 flex items-start justify-between border-b-[0.5px] border-white/10 pb-4">
+            <aside className="border-[0.5px] border-white/20 bg-[--color-bg] p-1 relative overflow-hidden group animate-fade-in delay-100 h-fit">
+              <div className="border-[0.5px] border-dashed border-white/20 p-6 flex flex-col bg-[--color-surface]/50 transition-colors group-hover:bg-[--color-surface]">
+                <div className="mb-6 flex items-start justify-between border-b-[0.5px] border-white/20 pb-4">
                   <div className="flex flex-col gap-1">
                     <span className="text-sm font-bold tracking-tight text-[--color-foreground]">CLAIM DETAILS</span>
                   </div>
@@ -126,16 +126,6 @@ export default async function ClaimPerkPage({ params }: PageProps) {
                     >
                       Visit Website
                     </a>
-                  </div>
-
-                  <div>
-                    <p className="mb-2 text-[10px] uppercase tracking-widest text-[--color-subtle] font-mono">
-                      Support
-                    </p>
-                    <p className="text-xs text-[--color-subtle] font-mono">
-                      If you have issues claiming, contact{' '}
-                      <span className="text-[--color-foreground]">{perk.telegramUsername}</span> on Telegram.
-                    </p>
                   </div>
                 </div>
               </div>

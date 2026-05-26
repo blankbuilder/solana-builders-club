@@ -15,6 +15,16 @@ export class FormFieldError extends Error {
   }
 }
 
+export class FormValidationError extends Error {
+  readonly errors: Record<string, string>
+
+  constructor(errors: Record<string, string>) {
+    super(Object.values(errors)[0] ?? 'Invalid form submission')
+    this.name = 'FormValidationError'
+    this.errors = errors
+  }
+}
+
 export interface PerkFormInput {
   telegramUsername: string
   projectName: string
@@ -49,29 +59,89 @@ export function parseFormError(error: unknown): string {
   return error instanceof Error ? error.message : 'Invalid form submission'
 }
 
-export function parseFieldError(error: unknown): { field?: string; message: string } {
+export function parseSubmissionError(error: unknown): {
+  errors?: Record<string, string>
+  formError?: string
+} {
+  if (error instanceof FormValidationError) {
+    return { errors: error.errors }
+  }
   if (error instanceof FormFieldError) {
-    return { field: error.field, message: error.message }
+    return { errors: { [error.field]: error.message } }
   }
   if (error instanceof Error) {
-    return { message: error.message }
+    return { formError: error.message }
   }
-  return { message: 'Invalid form submission' }
+  return { formError: 'Invalid form submission' }
 }
 
 async function parsePerkForm(
   formData: FormData,
   { requireLogo }: { requireLogo: boolean }
 ): Promise<PerkFormInput> {
+  const errors: Record<string, string> = {}
+  const telegramUsername = collectFieldError(errors, () =>
+    requiredTelegramUsername(formData, 'telegramUsername', 'Telegram username')
+  )
+  const projectName = collectFieldError(errors, () =>
+    requiredText(formData, 'projectName', 'Project name')
+  )
+  const projectDescription = collectFieldError(errors, () =>
+    requiredText(formData, 'projectDescription', 'Project description')
+  )
+  const projectWebsite = collectFieldError(errors, () =>
+    requiredUrl(formData, 'projectWebsite', 'Project website')
+  )
+  const logo = await collectAsyncFieldError(errors, () => parseLogoDataUrl(formData, { requireLogo }))
+  const offerTitle = collectFieldError(errors, () =>
+    requiredText(formData, 'offerTitle', 'Offer title')
+  )
+  const offerTerms = collectFieldError(errors, () =>
+    requiredText(formData, 'offerTerms', 'Offer terms')
+  )
+
+  if (Object.keys(errors).length > 0) {
+    throw new FormValidationError(errors)
+  }
+
   return {
-    telegramUsername: requiredTelegramUsername(formData, 'telegramUsername', 'Telegram username'),
-    projectName: requiredText(formData, 'projectName', 'Project name'),
-    projectDescription: requiredText(formData, 'projectDescription', 'Project description'),
-    projectWebsite: requiredUrl(formData, 'projectWebsite', 'Project website'),
-    logoDataUrl: await logoDataUrl(formData, { requireLogo }),
-    offerTitle: requiredText(formData, 'offerTitle', 'Offer title'),
-    offerTerms: requiredText(formData, 'offerTerms', 'Offer terms'),
+    telegramUsername: telegramUsername as string,
+    projectName: projectName as string,
+    projectDescription: projectDescription as string,
+    projectWebsite: projectWebsite as string,
+    logoDataUrl: logo as string,
+    offerTitle: offerTitle as string,
+    offerTerms: offerTerms as string,
     offerCode: optionalText(formData, 'offerCode'),
+  }
+}
+
+function collectFieldError<T>(errors: Record<string, string>, parse: () => T): T | undefined {
+  try {
+    return parse()
+  } catch (error) {
+    if (error instanceof FormFieldError) {
+      errors[error.field] = error.message
+      return undefined
+    }
+
+    throw error
+  }
+}
+
+async function collectAsyncFieldError<T>(
+  errors: Record<string, string>,
+  parse: () => Promise<T>
+): Promise<T | undefined> {
+  try {
+    return await parse()
+  } catch (error) {
+    if (error instanceof FormFieldError) {
+      errors[error.field] = error.message
+      return undefined
+    }
+
+    throw error
   }
 }
 
@@ -127,7 +197,7 @@ function requiredUrl(formData: FormData, key: string, label: string): string {
   }
 }
 
-async function logoDataUrl(
+export async function parseLogoDataUrl(
   formData: FormData,
   { requireLogo }: { requireLogo: boolean }
 ): Promise<string> {

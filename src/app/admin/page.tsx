@@ -18,7 +18,7 @@ export default async function AdminPage() {
 
   return (
     <PageWrapper>
-      <div className="w-full relative border-b-[0.5px] border-white/10 flex-1 flex flex-col">
+      <div className="w-full relative border-b-[0.5px] border-white/20 flex-1 flex flex-col">
         <SectionHeader current="ADMIN" title="DASHBOARD" />
         
         <div className="px-6 py-12 md:py-16 mx-auto w-full flex-1">
@@ -39,7 +39,7 @@ export default async function AdminPage() {
             <section className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               <Link
                 href="/admin/perks"
-                className="group border-[0.5px] border-white/10 bg-gradient-to-br from-white/[0.04] to-transparent p-6 transition-colors hover:border-white/20 flex flex-col min-h-[200px]"
+                className="group border-[0.5px] border-white/20 bg-gradient-to-br from-white/[0.04] to-transparent p-6 transition-colors hover:border-white/20 flex flex-col min-h-[200px]"
               >
                 <div className="mb-6 flex items-center justify-between">
                   <span className="text-[10px] font-mono uppercase tracking-widest text-[--color-warning]">
@@ -66,7 +66,7 @@ export default async function AdminPage() {
 function AdminAccessState({ auth }: { auth: Awaited<ReturnType<typeof getAdminAuth>> }) {
   if (auth.status === 'anonymous') {
     return (
-      <div className="border-[0.5px] border-white/10 bg-[--color-surface] p-6 max-w-md">
+      <div className="border-[0.5px] border-white/20 bg-[--color-surface] p-6 max-w-md">
         <p className="mb-6 text-sm leading-relaxed text-[--color-subtle]">
           Telegram admin verification is required.
         </p>

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { parseAdminPerkForm, parsePartnerPerkForm } from './validation'
+import { FormValidationError, parseAdminPerkForm, parsePartnerPerkForm } from './validation'
 
 describe('parsePartnerPerkForm', () => {
   it('parses a valid partner perk submission', async () => {
@@ -51,6 +51,20 @@ describe('parsePartnerPerkForm', () => {
         })
       )
     ).rejects.toThrow('Logo is required')
+  })
+
+  it('returns every invalid field in one validation error', async () => {
+    await expect(parsePartnerPerkForm(formData({}))).rejects.toMatchObject({
+      errors: {
+        telegramUsername: 'Telegram username is required',
+        projectName: 'Project name is required',
+        projectDescription: 'Project description is required',
+        projectWebsite: 'Project website is required',
+        logo: 'Logo is required',
+        offerTitle: 'Offer title is required',
+        offerTerms: 'Offer terms is required',
+      },
+    } satisfies Partial<FormValidationError>)
   })
 })
 
