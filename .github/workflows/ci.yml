@@ -31,16 +31,14 @@ jobs:
       - name: Type check
         run: npm run check
 
+      - name: Lint
+        run: npm run lint
+
       - name: Run tests
         run: npm run test:run
 
       - name: Build
         run: npm run build
 
-      - name: Verify build output
-        run: |
-          if [ ! -f "dist/index.html" ]; then
-            echo "Build failed: index.html not found"
-            exit 1
-          fi
-          echo "Build successful: $(find dist -type f | wc -l) files generated"
+      - name: Audit dependencies
+        run: npm audit --audit-level=moderate

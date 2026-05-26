@@ -1,7 +1,10 @@
 # build output
 dist/
+.next/
+out/
 # generated types
 .astro/
+tsconfig.tsbuildinfo
 
 # dependencies
 node_modules/
@@ -25,3 +28,4 @@ pnpm-debug.log*
 
 # local MCP server config
 .mcp.json
+.gstack/

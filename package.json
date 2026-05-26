@@ -3,29 +3,45 @@
   "type": "module",
   "version": "0.0.1",
   "scripts": {
-    "dev": "astro dev",
-    "build": "astro build",
-    "preview": "astro preview",
-    "astro": "astro",
-    "check": "astro check",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "preview": "npm run start",
+    "check": "tsc --noEmit",
+    "lint": "eslint .",
+    "db:migrate": "node scripts/migrate.mjs",
+    "db:migrate:dry": "node scripts/migrate.mjs --dry-run",
+    "db:migrate:production": "node scripts/migrate.mjs --production-only",
     "test": "vitest",
     "test:run": "vitest run",
     "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
-    "@astrojs/sitemap": "^3.7.2",
-    "@fontsource/inter": "^5.2.8",
     "@fontsource/jetbrains-mono": "^5.2.8",
+    "@neondatabase/serverless": "^1.1.0",
     "@plausible-analytics/tracker": "^0.4.4",
-    "astro": "^5.16.15",
+    "@tailwindcss/postcss": "^4.3.0",
+    "drizzle-orm": "^0.45.2",
+    "jose": "^6.2.3",
+    "next": "^16.2.6",
+    "postgres": "^3.4.9",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6",
     "tailwindcss": "^4.1.18"
   },
   "devDependencies": {
-    "@astrojs/check": "^0.9.6",
-    "@tailwindcss/vite": "^4.1.18",
     "@types/node": "^25.9.1",
+    "@types/react": "^19.2.15",
+    "@types/react-dom": "^19.2.3",
     "@vitest/coverage-v8": "^4.0.16",
+    "eslint": "^9.39.4",
+    "eslint-config-next": "^16.2.6",
     "typescript": "^5.9.3",
     "vitest": "^4.0.16"
+  },
+  "overrides": {
+    "next": {
+      "postcss": "^8.5.10"
+    }
   }
 }
