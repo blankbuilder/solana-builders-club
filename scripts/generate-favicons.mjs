@@ -2,7 +2,7 @@ import sharp from 'sharp'
 import { readFileSync, writeFileSync, copyFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 
-const SRC_SVG = '/Users/julien/WORK/SOLANA BUILDERS CLUB/logo-sbc.svg'
+const SRC_SVG = '/Users/julien/WORK/SOLANA BUILDERS CLUB/favicon-sbc.svg'
 const PUBLIC = resolve(import.meta.dirname, '..', 'public')
 
 const svgBuffer = readFileSync(SRC_SVG)
