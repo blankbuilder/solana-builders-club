@@ -5,6 +5,16 @@ export const perkStatuses: PerkStatus[] = ['submitted', 'approved', 'rejected', 
 const allowedLogoTypes = new Set(['image/png', 'image/jpeg', 'image/webp', 'image/svg+xml'])
 const maxLogoBytes = 1_000_000
 
+export class FormFieldError extends Error {
+  readonly field: string
+
+  constructor(field: string, message: string) {
+    super(message)
+    this.name = 'FormFieldError'
+    this.field = field
+  }
+}
+
 export interface PerkFormInput {
   telegramUsername: string
   projectName: string
@@ -39,6 +49,16 @@ export function parseFormError(error: unknown): string {
   return error instanceof Error ? error.message : 'Invalid form submission'
 }
 
+export function parseFieldError(error: unknown): { field?: string; message: string } {
+  if (error instanceof FormFieldError) {
+    return { field: error.field, message: error.message }
+  }
+  if (error instanceof Error) {
+    return { message: error.message }
+  }
+  return { message: 'Invalid form submission' }
+}
+
 async function parsePerkForm(
   formData: FormData,
   { requireLogo }: { requireLogo: boolean }
@@ -59,7 +79,7 @@ function requiredText(formData: FormData, key: string, label: string): string {
   const value = optionalText(formData, key)
 
   if (!value) {
-    throw new Error(`${label} is required`)
+    throw new FormFieldError(key, `${label} is required`)
   }
 
   return value
@@ -82,7 +102,10 @@ function requiredTelegramUsername(formData: FormData, key: string, label: string
   const normalized = value.startsWith('@') ? value : `@${value}`
 
   if (!/^@[A-Za-z0-9_]{5,32}$/.test(normalized)) {
-    throw new Error(`${label} must be a valid @username`)
+    throw new FormFieldError(
+      key,
+      `${label} must be 5-32 characters and contain only letters, numbers, or underscores`
+    )
   }
 
   return normalized
@@ -100,7 +123,7 @@ function requiredUrl(formData: FormData, key: string, label: string): string {
 
     return url.toString()
   } catch {
-    throw new Error(`${label} must be a valid URL`)
+    throw new FormFieldError(key, `${label} must be a valid URL`)
   }
 }
 
@@ -112,11 +135,11 @@ async function logoDataUrl(
 
   if (value instanceof File && value.size > 0) {
     if (!allowedLogoTypes.has(value.type)) {
-      throw new Error('Logo must be a PNG, JPEG, WebP, or SVG image')
+      throw new FormFieldError('logo', 'Logo must be a PNG, JPEG, WebP, or SVG image')
     }
 
     if (value.size > maxLogoBytes) {
-      throw new Error('Logo must be 1 MB or smaller')
+      throw new FormFieldError('logo', 'Logo must be 1 MB or smaller')
     }
 
     const bytes = Buffer.from(await value.arrayBuffer()).toString('base64')
@@ -131,7 +154,7 @@ async function logoDataUrl(
   }
 
   if (requireLogo) {
-    throw new Error('Logo is required')
+    throw new FormFieldError('logo', 'Logo is required')
   }
 
   return ''
@@ -146,7 +169,7 @@ function enumValue<T extends string>(
   const value = requiredText(formData, key, label)
 
   if (!values.includes(value as T)) {
-    throw new Error(`${label} is invalid`)
+    throw new FormFieldError(key, `${label} is invalid`)
   }
 
   return value as T

@@ -2,21 +2,28 @@
 
 import { redirect } from 'next/navigation'
 import { createSubmittedPerk, isPerksDatabaseConfigured } from '@/lib/perks/queries'
-import { parseFormError, parsePartnerPerkForm } from '@/lib/perks/validation'
+import { parseFieldError, parsePartnerPerkForm } from '@/lib/perks/validation'
 
-export async function submitPartnerPerk(formData: FormData) {
-  let redirectTo = '/partners/perks/new?submitted=1'
+export interface PartnerPerkFormState {
+  errors?: Record<string, string>
+  formError?: string
+}
 
+export async function submitPartnerPerk(
+  _prevState: PartnerPerkFormState,
+  formData: FormData
+): Promise<PartnerPerkFormState> {
   if (!isPerksDatabaseConfigured()) {
-    redirect('/partners/perks/new?error=database')
+    return { formError: 'Perk submissions are temporarily unavailable. Please try again later.' }
   }
 
   try {
     const input = await parsePartnerPerkForm(formData)
     await createSubmittedPerk(input)
   } catch (error) {
-    redirectTo = `/partners/perks/new?error=${encodeURIComponent(parseFormError(error))}`
+    const { field, message } = parseFieldError(error)
+    return field ? { errors: { [field]: message } } : { formError: message }
   }
 
-  redirect(redirectTo)
+  redirect('/partners/perks/new?submitted=1')
 }

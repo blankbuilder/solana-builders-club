@@ -35,7 +35,7 @@ describe('parsePartnerPerkForm', () => {
           offerTerms: '$5k in credits for eligible teams building on Solana.',
         })
       )
-    ).rejects.toThrow('Telegram username must be a valid @username')
+    ).rejects.toThrow('Telegram username must be 5-32 characters and contain only letters, numbers, or underscores')
   })
 
   it('requires a logo upload', async () => {

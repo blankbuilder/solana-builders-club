@@ -87,7 +87,7 @@ function Hero({ members }: { members: ReturnType<typeof getMembers> }) {
             </div>
           </div>
 
-          <div className="animate-fade-in delay-300 relative z-10 flex justify-end">
+          <div className="animate-fade-in delay-300 relative z-10 flex justify-center md:justify-end">
             <SolanaAsciiAnimation />
           </div>
         </div>
