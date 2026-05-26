@@ -1,8 +1,11 @@
 import Link from 'next/link'
 import SolanaAsciiAnimation from '@/components/SolanaAsciiAnimation'
 import { PageWrapper, SectionHeader } from '@/components/AppLayout'
+import { PixelCanvas } from '@/components/ui/PixelCanvas'
 import { siteConfig } from '@/config'
 import { getMembers } from '@/lib/members'
+
+const MEMBER_PIXEL_COLORS = ['#9945FF', '#14F195', '#f7b955']
 
 export default function HomePage() {
   const members = getMembers()
@@ -107,21 +110,22 @@ function Hero({ members }: { members: ReturnType<typeof getMembers> }) {
             style={{ animation: 'marquee 120s linear infinite' }}
           >
             {duplicatedMembers.map((member, i) => (
-              <div 
+              <div
                 key={`${member.name}-${i}`}
-                className="flex-none flex flex-col items-center justify-center w-[160px] sm:w-[200px] border-r-[0.5px] border-white/10 group relative transition-colors hover:bg-[--color-surface]/30 bg-transparent h-[120px] sm:h-[140px] gap-3"
+                className="flex-none flex flex-col items-center justify-center w-[160px] sm:w-[200px] border-r-[0.5px] border-white/10 group relative overflow-hidden transition-colors bg-transparent h-[120px] sm:h-[140px] gap-3"
                 title={member.name}
               >
-                <img 
-                  src={member.image} 
+                <PixelCanvas colors={MEMBER_PIXEL_COLORS} gap={8} speed={35} />
+                <img
+                  src={member.image}
                   alt={member.name}
-                  className="max-h-7 sm:max-h-8 max-w-[100px] sm:max-w-[120px] opacity-70 group-hover:opacity-100 transition-opacity filter grayscale group-hover:grayscale-0"
+                  className="relative z-10 max-h-7 sm:max-h-8 max-w-[100px] sm:max-w-[120px] opacity-70 group-hover:opacity-100 transition-opacity filter grayscale group-hover:grayscale-0"
                   loading="lazy"
                 />
-                <span className="text-[10px] font-mono text-[--color-subtle] group-hover:text-[--color-foreground] transition-colors">
+                <span className="relative z-10 text-[10px] font-mono text-[--color-subtle] group-hover:text-[--color-foreground] transition-colors">
                   {member.name}
                 </span>
-                <div className="absolute bottom-0 left-0 right-0 h-[1.5px] bg-[--color-warning] opacity-0 group-hover:opacity-100 transition-opacity" />
+                <div className="absolute bottom-0 left-0 right-0 h-[1.5px] bg-[--color-warning] opacity-0 group-hover:opacity-100 transition-opacity z-10" />
               </div>
             ))}
           </div>
