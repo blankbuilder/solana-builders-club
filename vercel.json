@@ -4,6 +4,7 @@
   "public": true,
   "buildCommand": "npm run db:migrate:production && npm run build",
   "installCommand": "npm ci",
+  "outputDirectory": ".next",
   "headers": [
     {
       "source": "/(.*)",
