@@ -7,6 +7,7 @@ import {
 import { getAdminAuth } from '@/lib/admin'
 import { getAdminPerks, isPerksDatabaseConfigured } from '@/lib/perks/queries'
 import type { Perk, PerkStatus } from '@/types'
+import { PageWrapper, SectionHeader } from '@/components/AppLayout'
 
 export const dynamic = 'force-dynamic'
 
@@ -30,46 +31,41 @@ export default async function AdminPerksPage({ searchParams }: PageProps) {
   const adminError = firstParam(params.admin_error)
 
   return (
-    <div className="min-h-screen p-6 md:p-12">
-      <header className="mb-12 flex items-center justify-between gap-6">
-        <Link
-          href="/admin"
-          className="text-[10px] uppercase tracking-widest text-[--color-muted] transition-colors hover:text-[--color-foreground] md:text-xs"
-        >
-          Admin
-        </Link>
-        <div className="flex items-center gap-6">
-          <Link
-            href="/partners/perks/new"
-            className="text-[10px] uppercase tracking-widest text-[--color-muted] transition-colors hover:text-[--color-foreground] md:text-xs"
-          >
-            Partner form
-          </Link>
+    <PageWrapper>
+      <div className="w-full relative border-b-[0.5px] border-white/10 flex-1 flex flex-col">
+        <SectionHeader current="ADMIN" title="PERK MODERATION" />
+        
+        <div className="px-6 py-12 md:py-16 mx-auto w-full max-w-7xl flex-1">
+          <div className="mb-12 flex justify-between items-end flex-wrap gap-4">
+            <div>
+              <h1
+                className="mb-4 text-3xl leading-tight font-semibold tracking-tight md:text-5xl"
+              >
+                Perk moderation
+              </h1>
+              <p className="text-sm text-[--color-subtle] font-mono">
+                Manage all partner perks submissions.
+              </p>
+            </div>
+            
+            <Link
+              href="/partners/perks/new"
+              className="btn-primary corner-brackets inline-flex text-xs"
+            >
+              Submit test perk
+            </Link>
+          </div>
+
+          {auth.status !== 'authorized' ? (
+            <AdminAccessState auth={auth} />
+          ) : !isPerksDatabaseConfigured() ? (
+            <Notice tone="warning">`DATABASE_URL` is required before perks can be managed.</Notice>
+          ) : (
+            <AdminPerksContent adminMessage={adminMessage} adminError={adminError} />
+          )}
         </div>
-      </header>
-
-      <main className="mx-auto w-full max-w-7xl">
-        <section className="mb-10">
-          <p className="mb-4 text-xs uppercase tracking-widest text-[--color-muted]">
-            Admin
-          </p>
-          <h1
-            className="mb-4 text-3xl leading-tight font-medium tracking-tight md:text-5xl"
-            style={{ fontFamily: 'var(--font-family-display)' }}
-          >
-            Perk moderation
-          </h1>
-        </section>
-
-        {auth.status !== 'authorized' ? (
-          <AdminAccessState auth={auth} />
-        ) : !isPerksDatabaseConfigured() ? (
-          <Notice tone="warning">`DATABASE_URL` is required before perks can be managed.</Notice>
-        ) : (
-          <AdminPerksContent adminMessage={adminMessage} adminError={adminError} />
-        )}
-      </main>
-    </div>
+      </div>
+    </PageWrapper>
   )
 }
 
@@ -88,28 +84,28 @@ async function AdminPerksContent({
       {adminMessage && <Notice tone="success">Perk updated.</Notice>}
       {adminError && <Notice tone="warning">{adminError}</Notice>}
 
-      <div className="mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+      <div className="mb-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
         {(['submitted', 'approved', 'rejected', 'paused', 'archived'] satisfies PerkStatus[]).map(
           (status) => (
-            <div key={status} className="border border-[--color-border] bg-[--color-surface] p-4">
-              <p className="mb-2 text-[10px] uppercase tracking-widest text-[--color-muted]">
+            <div key={status} className="border-[0.5px] border-white/10 bg-[--color-surface] p-4 flex flex-col justify-between min-h-[100px]">
+              <p className="text-[10px] uppercase tracking-widest text-[--color-subtle] font-mono">
                 {status}
               </p>
-              <p className="text-2xl text-[--color-foreground]">{counts[status] ?? 0}</p>
+              <p className="text-3xl text-[--color-foreground] font-semibold">{counts[status] ?? 0}</p>
             </div>
           )
         )}
       </div>
 
       {perks.length === 0 ? (
-        <div className="border border-[--color-border] bg-[--color-surface] p-6 text-sm text-[--color-subtle]">
+        <div className="border-[0.5px] border-white/10 bg-[--color-surface] p-6 text-sm text-[--color-subtle] font-mono text-center">
           No partner perks have been submitted yet.
         </div>
       ) : (
-        <div className="overflow-x-auto border border-[--color-border] bg-[--color-surface]">
+        <div className="overflow-x-auto border-[0.5px] border-white/10 bg-[--color-surface]">
           <table className="w-full min-w-[980px] border-collapse text-left text-sm">
             <thead>
-              <tr className="border-b border-[--color-border] text-xs uppercase tracking-widest text-[--color-muted]">
+              <tr className="border-b-[0.5px] border-white/10 text-[10px] uppercase tracking-widest text-[--color-subtle] font-mono bg-white/[0.02]">
                 <th className="p-4 font-normal">Perk</th>
                 <th className="p-4 font-normal">Project</th>
                 <th className="p-4 font-normal">Contact</th>
@@ -121,28 +117,32 @@ async function AdminPerksContent({
             </thead>
             <tbody>
               {perks.map((perk) => (
-                <tr key={perk.id} className="border-b border-[--color-border] last:border-b-0">
-                  <td className="p-4">
-                    <Link href={`/admin/perks/${perk.id}`} className="text-[--color-foreground] underline">
+                <tr key={perk.id} className="border-b-[0.5px] border-white/10 last:border-b-0 hover:bg-white/[0.02] transition-colors">
+                  <td className="p-4 align-top">
+                    <Link href={`/admin/perks/${perk.id}`} className="text-[--color-foreground] hover:text-[--color-subtle] transition-colors font-medium">
                       {perk.offerTitle}
                     </Link>
-                    <p className="mt-1 text-xs text-[--color-muted]">{perk.offerTerms}</p>
+                    <p className="mt-2 text-xs text-[--color-muted] line-clamp-1 max-w-[200px]">{perk.offerTerms}</p>
                   </td>
-                  <td className="p-4 text-[--color-subtle]">
-                    <p>{perk.projectName}</p>
-                    <p className="mt-1 text-xs text-[--color-muted]">{perk.projectWebsite}</p>
+                  <td className="p-4 text-[--color-subtle] align-top">
+                    <p className="font-medium text-[--color-foreground]">{perk.projectName}</p>
+                    <a href={perk.projectWebsite} target="_blank" rel="noopener noreferrer" className="mt-1 text-xs text-[--color-muted] hover:text-[--color-subtle] transition-colors inline-block">{perk.projectWebsite}</a>
                   </td>
-                  <td className="p-4 text-[--color-subtle]">
+                  <td className="p-4 text-[--color-subtle] font-mono text-xs align-top">
                     {perk.telegramUsername}
                   </td>
-                  <td className="p-4">
-                    <span className="border border-[--color-border] px-2 py-1 text-[10px] uppercase tracking-widest text-[--color-muted]">
+                  <td className="p-4 align-top">
+                    <span className={`border-[0.5px] px-2 py-1 text-[9px] uppercase tracking-widest font-mono ${
+                      perk.status === 'approved' ? 'border-[--color-accent-secondary] text-[--color-accent-secondary] bg-[--color-accent-secondary]/10' :
+                      perk.status === 'submitted' ? 'border-[--color-warning] text-[--color-warning] bg-[--color-warning]/10' :
+                      'border-white/20 text-[--color-subtle]'
+                    }`}>
                       {perk.status}
                     </span>
                   </td>
-                  <td className="p-4 text-[--color-subtle]">{perk.featured ? 'Yes' : 'No'}</td>
-                  <td className="p-4 text-[--color-subtle]">{formatDate(perk.createdAt)}</td>
-                  <td className="p-4">
+                  <td className="p-4 text-[--color-subtle] font-mono text-xs align-top">{perk.featured ? 'Yes' : 'No'}</td>
+                  <td className="p-4 text-[--color-subtle] font-mono text-xs align-top whitespace-nowrap">{formatDate(perk.createdAt)}</td>
+                  <td className="p-4 align-top">
                     <div className="flex flex-wrap gap-2">
                       <StatusButton perk={perk} status="approved" label="Approve" />
                       <StatusButton perk={perk} status="rejected" label="Reject" />
@@ -151,7 +151,7 @@ async function AdminPerksContent({
                       <form action={setPerkFeaturedAction}>
                         <input name="id" type="hidden" value={perk.id} />
                         <input name="featured" type="hidden" value={String(!perk.featured)} />
-                        <button className="border border-[--color-border] px-2 py-1 text-xs text-[--color-subtle] transition-colors hover:border-[--color-foreground] hover:text-[--color-foreground]">
+                        <button className="border-[0.5px] border-white/20 bg-[--color-bg] px-2 py-1 text-[10px] uppercase tracking-widest text-[--color-subtle] transition-colors hover:border-white/50 hover:text-[--color-foreground] font-mono">
                           {perk.featured ? 'Unfeature' : 'Feature'}
                         </button>
                       </form>
@@ -181,7 +181,7 @@ function StatusButton({
       <input name="id" type="hidden" value={perk.id} />
       <input name="status" type="hidden" value={status} />
       <button
-        className="border border-[--color-border] px-2 py-1 text-xs text-[--color-subtle] transition-colors hover:border-[--color-foreground] hover:text-[--color-foreground] disabled:cursor-not-allowed disabled:opacity-40"
+        className="border-[0.5px] border-white/20 bg-[--color-bg] px-2 py-1 text-[10px] uppercase tracking-widest text-[--color-subtle] transition-colors hover:border-white/50 hover:text-[--color-foreground] disabled:cursor-not-allowed disabled:opacity-40 font-mono"
         disabled={perk.status === status}
       >
         {label}
@@ -193,13 +193,13 @@ function StatusButton({
 function AdminAccessState({ auth }: { auth: Awaited<ReturnType<typeof getAdminAuth>> }) {
   if (auth.status === 'anonymous') {
     return (
-      <div className="border border-[--color-border] bg-[--color-surface] p-6">
-        <p className="mb-5 text-sm leading-relaxed text-[--color-subtle]">
+      <div className="border-[0.5px] border-white/10 bg-[--color-surface] p-6 max-w-md">
+        <p className="mb-6 text-sm leading-relaxed text-[--color-subtle]">
           Telegram admin verification is required.
         </p>
         <a
           href={`/api/telegram/start?returnTo=${encodeURIComponent('/admin/perks')}`}
-          className="inline-flex items-center justify-center border border-[--color-border] px-4 py-2 text-sm text-[--color-foreground] transition-colors hover:border-[--color-foreground]"
+          className="btn-primary corner-brackets inline-flex"
         >
           Connect Telegram
         </a>
@@ -210,7 +210,7 @@ function AdminAccessState({ auth }: { auth: Awaited<ReturnType<typeof getAdminAu
   if (auth.status === 'forbidden') {
     return (
       <Notice tone="warning">
-        Telegram ID {auth.session.telegramUserId} is verified but not in `ADMIN_TELEGRAM_IDS`.
+        Telegram ID <span className="text-white">{auth.session.telegramUserId}</span> is verified but not in `ADMIN_TELEGRAM_IDS`.
       </Notice>
     )
   }
@@ -221,10 +221,10 @@ function AdminAccessState({ auth }: { auth: Awaited<ReturnType<typeof getAdminAu
 function Notice({ children, tone }: { children: React.ReactNode; tone: 'success' | 'warning' }) {
   return (
     <div
-      className={`mb-6 border p-4 text-sm ${
+      className={`mb-8 border-[0.5px] p-4 text-sm font-mono inline-block ${
         tone === 'success'
-          ? 'border-[--color-accent-secondary] text-[--color-accent-secondary]'
-          : 'border-[--color-warning] text-[--color-warning]'
+          ? 'border-[--color-accent-secondary] text-[--color-accent-secondary] bg-[--color-accent-secondary]/10'
+          : 'border-[--color-warning] text-[--color-warning] bg-[--color-warning]/10'
       }`}
     >
       {children}

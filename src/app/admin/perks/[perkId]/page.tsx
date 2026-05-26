@@ -3,51 +3,47 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { updatePerkAction } from '@/app/admin/perks/actions'
 import { getAdminAuth } from '@/lib/admin'
-import { getPerk, isPerksDatabaseConfigured } from '@/lib/perks/queries'
-import type { PerkStatus } from '@/types'
+import { getPerk } from '@/lib/perks/queries'
+import { PageWrapper, SectionHeader } from '@/components/AppLayout'
+import { ImageUploadPreview } from '@/components/ImageUploadPreview'
 
 export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
   title: 'Edit Perk',
-  description: 'Edit a Solana Builders Club partner perk.',
+  description: 'Edit a partner perk submission.',
+  robots: {
+    index: false,
+    follow: false,
+  },
 }
 
 type SearchParams = Record<string, string | string[] | undefined>
 
 interface PageProps {
-  params: Promise<{
-    perkId: string
-  }>
+  params: Promise<{ perkId: string }>
   searchParams: Promise<SearchParams>
 }
 
 export default async function EditPerkPage({ params, searchParams }: PageProps) {
-  const [{ perkId }, resolvedSearchParams, auth] = await Promise.all([
+  const [{ perkId }, queryParams, auth] = await Promise.all([
     params,
     searchParams,
     getAdminAuth(),
   ])
-  const adminMessage = firstParam(resolvedSearchParams.admin)
-  const adminError = firstParam(resolvedSearchParams.admin_error)
 
   if (auth.status !== 'authorized') {
     return (
-      <Shell>
-        <div className="border border-[--color-warning] p-4 text-sm text-[--color-warning]">
-          Admin access is required.
+      <PageWrapper>
+        <div className="w-full relative border-b-[0.5px] border-white/10 flex-1 flex flex-col">
+          <SectionHeader current="ADMIN" title="EDIT PERK" />
+          <div className="px-6 py-12 md:py-16 mx-auto w-full max-w-3xl flex-1">
+            <div className="border-[0.5px] border-white/10 bg-[--color-surface] p-6 text-sm text-[--color-warning] font-mono">
+              Not authorized. <Link href="/admin" className="underline hover:text-[--color-foreground]">Go to admin dashboard</Link>
+            </div>
+          </div>
         </div>
-      </Shell>
-    )
-  }
-
-  if (!isPerksDatabaseConfigured()) {
-    return (
-      <Shell>
-        <div className="border border-[--color-warning] p-4 text-sm text-[--color-warning]">
-          `DATABASE_URL` is required before perks can be edited.
-        </div>
-      </Shell>
+      </PageWrapper>
     )
   }
 
@@ -57,223 +53,223 @@ export default async function EditPerkPage({ params, searchParams }: PageProps) 
     notFound()
   }
 
-  return (
-    <Shell>
-      {adminMessage && (
-        <div className="mb-6 border border-[--color-accent-secondary] p-4 text-sm text-[--color-accent-secondary]">
-          Perk updated.
-        </div>
-      )}
-      {adminError && (
-        <div className="mb-6 border border-[--color-warning] p-4 text-sm text-[--color-warning]">
-          {adminError}
-        </div>
-      )}
-      <form
-        action={updatePerkAction}
-        className="grid gap-5 border border-[--color-border] bg-[--color-surface] p-5 md:p-6"
-        encType="multipart/form-data"
-      >
-        <input name="id" type="hidden" value={perk.id} />
-        <div className="grid gap-5 md:grid-cols-2">
-          <Field label="Telegram username" name="telegramUsername" defaultValue={perk.telegramUsername} required />
-          <Field label="Project name" name="projectName" defaultValue={perk.projectName} required />
-        </div>
-        <Field label="Project website" name="projectWebsite" type="url" defaultValue={perk.projectWebsite} required />
-        <TextArea label="Project description" name="projectDescription" rows={5} defaultValue={perk.projectDescription} required />
-        <LogoField value={perk.logoDataUrl} />
-        <Field label="Offer title" name="offerTitle" defaultValue={perk.offerTitle} required />
-        <TextArea label="Offer terms" name="offerTerms" rows={5} defaultValue={perk.offerTerms} required />
-        <Field label="Offer code" name="offerCode" defaultValue={perk.offerCode ?? ''} />
-        <div className="grid gap-5 md:grid-cols-3">
-          <Select
-            label="Status"
-            name="status"
-            required
-            value={perk.status}
-            options={[
-              ['submitted', 'Submitted'],
-              ['approved', 'Approved'],
-              ['rejected', 'Rejected'],
-              ['paused', 'Paused'],
-              ['archived', 'Archived'],
-            ]}
-          />
-          <label className="flex items-center gap-3 pt-7 text-sm text-[--color-subtle]">
-            <input name="featured" type="checkbox" defaultChecked={perk.featured} />
-            Featured
-          </label>
-        </div>
-        <TextArea label="Rejection reason" name="rejectionReason" rows={3} defaultValue={perk.rejectionReason ?? ''} />
-        <button
-          type="submit"
-          className="mt-2 inline-flex w-fit cursor-pointer items-center justify-center border border-[--color-border] px-4 py-2 text-sm text-[--color-foreground] transition-colors hover:border-[--color-foreground]"
-        >
-          Save changes
-        </button>
-      </form>
-    </Shell>
-  )
-}
+  const adminMessage = firstParam(queryParams.admin)
+  const adminError = firstParam(queryParams.admin_error)
 
-function Shell({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen p-6 md:p-12">
-      <header className="mb-12 flex items-center justify-between gap-6">
-        <Link
-          href="/admin"
-          className="text-[10px] uppercase tracking-widest text-[--color-muted] transition-colors hover:text-[--color-foreground] md:text-xs"
-        >
-          Admin
-        </Link>
-        <div className="flex items-center gap-6">
-          <Link
-            href="/perks"
-            className="text-[10px] uppercase tracking-widest text-[--color-muted] transition-colors hover:text-[--color-foreground] md:text-xs"
-          >
-            Public perks
-          </Link>
-        </div>
-      </header>
-      <main className="mx-auto w-full max-w-5xl">
-        <p className="mb-4 text-xs uppercase tracking-widest text-[--color-muted]">Admin</p>
-        <h1
-          className="mb-8 text-3xl leading-tight font-medium tracking-tight md:text-5xl"
-          style={{ fontFamily: 'var(--font-family-display)' }}
-        >
-          Edit perk
-        </h1>
-        {children}
-      </main>
-    </div>
-  )
-}
-
-function Field({
-  label,
-  name,
-  defaultValue,
-  type = 'text',
-  required,
-  min,
-}: {
-  label: string
-  name: string
-  defaultValue?: string
-  type?: string
-  required?: boolean
-  min?: string
-}) {
-  return (
-    <label className="grid gap-2 text-sm text-[--color-subtle]">
-      <FieldLabel label={label} required={required} />
-      <input
-        className="border border-[--color-border] bg-black px-3 py-2 text-sm text-[--color-foreground] outline-none transition-colors focus:border-[--color-muted]"
-        defaultValue={defaultValue}
-        min={min}
-        name={name}
-        required={required}
-        type={type}
-      />
-    </label>
-  )
-}
-
-function TextArea({
-  label,
-  name,
-  rows,
-  defaultValue,
-  required,
-}: {
-  label: string
-  name: string
-  rows: number
-  defaultValue?: string
-  required?: boolean
-}) {
-  return (
-    <label className="grid gap-2 text-sm text-[--color-subtle]">
-      <FieldLabel label={label} required={required} />
-      <textarea
-        className="resize-y border border-[--color-border] bg-black px-3 py-2 text-sm leading-relaxed text-[--color-foreground] outline-none transition-colors focus:border-[--color-muted]"
-        defaultValue={defaultValue}
-        name={name}
-        required={required}
-        rows={rows}
-      />
-    </label>
-  )
-}
-
-function LogoField({ value }: { value: string }) {
-  return (
-    <div className="grid gap-3 text-sm text-[--color-subtle]">
-      <span>Logo upload</span>
-      <input name="existingLogoDataUrl" type="hidden" value={value} />
-      {value && (
-        <div className="flex items-center gap-3">
-          <div className="flex h-12 w-12 items-center justify-center border border-[--color-border] bg-black">
-            <img alt="" className="max-h-8 max-w-8 object-contain" src={value} />
+    <PageWrapper>
+      <div className="w-full relative border-b-[0.5px] border-white/10 flex-1 flex flex-col">
+        <SectionHeader current="ADMIN" title="EDIT PERK" />
+        
+        <div className="px-6 py-12 md:py-16 mx-auto w-full max-w-3xl flex-1">
+          <div className="mb-12 flex justify-between items-end flex-wrap gap-4">
+            <div>
+              <Link href="/admin/perks" className="text-[10px] uppercase tracking-widest text-[--color-subtle] font-mono hover:text-[--color-foreground] transition-colors mb-4 inline-block">
+                &lt;- Back to perks
+              </Link>
+              <h1 className="text-3xl leading-tight font-semibold tracking-tight md:text-5xl">
+                Edit Perk
+              </h1>
+              <p className="mt-4 text-sm text-[--color-subtle] font-mono">
+                Modifying perk details and status.
+              </p>
+            </div>
           </div>
-          <span className="text-xs text-[--color-muted]">Upload a new file to replace it.</span>
+
+          {adminMessage && (
+            <div className="mb-8 border-[0.5px] border-[--color-accent-secondary] p-4 text-sm font-mono text-[--color-accent-secondary] bg-[--color-accent-secondary]/10">
+              Perk updated successfully.
+            </div>
+          )}
+          {adminError && (
+            <div className="mb-8 border-[0.5px] border-[--color-warning] p-4 text-sm font-mono text-[--color-warning] bg-[--color-warning]/10">
+              {adminError}
+            </div>
+          )}
+
+          <div className="border-[0.5px] border-white/10 bg-[--color-surface] p-6 md:p-8">
+            <div className="mb-8 flex flex-col gap-4 border-b-[0.5px] border-white/10 pb-6">
+              <div className="flex items-center gap-4">
+                {perk.logoDataUrl && (
+                  <img src={perk.logoDataUrl} alt={perk.projectName} className="w-12 h-12 object-contain" />
+                )}
+                <div>
+                  <h2 className="text-lg font-bold">{perk.projectName}</h2>
+                  <p className="text-xs text-[--color-subtle] font-mono">{perk.telegramUsername}</p>
+                </div>
+              </div>
+            </div>
+
+            <form action={updatePerkAction} className="grid gap-6">
+              <input type="hidden" name="id" value={perk.id} />
+              <input type="hidden" name="existingLogoDataUrl" value={perk.logoDataUrl} />
+
+              <div className="grid gap-6 md:grid-cols-2">
+                <div className="grid gap-2">
+                  <label htmlFor="status" className="text-sm font-medium text-[--color-foreground]">
+                    Status
+                  </label>
+                  <select
+                    id="status"
+                    name="status"
+                    defaultValue={perk.status}
+                    required
+                    className="w-full border-[0.5px] border-white/20 bg-[--color-bg] p-3 text-sm font-mono focus:border-white/50 focus:outline-none transition-colors appearance-none"
+                  >
+                    <option value="submitted">SUBMITTED</option>
+                    <option value="approved">APPROVED</option>
+                    <option value="rejected">REJECTED</option>
+                    <option value="paused">PAUSED</option>
+                    <option value="archived">ARCHIVED</option>
+                  </select>
+                </div>
+
+                <div className="grid gap-2">
+                  <label htmlFor="featured" className="text-sm font-medium text-[--color-foreground] flex items-center h-full">
+                    <input
+                      type="checkbox"
+                      id="featured"
+                      name="featured"
+                      defaultChecked={perk.featured}
+                      className="mr-3 w-4 h-4 accent-[--color-foreground] bg-[--color-bg] border-white/20 border-[0.5px]"
+                    />
+                    Featured Perk
+                  </label>
+                </div>
+              </div>
+
+              <div className="grid gap-2">
+                <label htmlFor="rejectionReason" className="text-sm font-medium text-[--color-foreground]">
+                  Rejection Reason <span className="text-[--color-subtle] font-mono text-xs">(if applicable)</span>
+                </label>
+                <input
+                  type="text"
+                  id="rejectionReason"
+                  name="rejectionReason"
+                  defaultValue={perk.rejectionReason ?? ''}
+                  placeholder="Explain why this perk was rejected (only visible to admins/submitter)"
+                  className="w-full border-[0.5px] border-white/20 bg-[--color-bg] p-3 text-sm focus:border-white/50 focus:outline-none transition-colors"
+                />
+              </div>
+
+              <div className="my-2 border-t-[0.5px] border-white/10" />
+
+              <div className="grid gap-2">
+                <label htmlFor="telegramUsername" className="text-sm font-medium text-[--color-foreground]">
+                  Submitter Telegram Username
+                </label>
+                <input
+                  type="text"
+                  id="telegramUsername"
+                  name="telegramUsername"
+                  defaultValue={perk.telegramUsername}
+                  required
+                  className="w-full border-[0.5px] border-white/20 bg-[--color-bg] p-3 text-sm font-mono focus:border-white/50 focus:outline-none transition-colors"
+                />
+              </div>
+
+              <div className="grid gap-2">
+                <label htmlFor="projectName" className="text-sm font-medium text-[--color-foreground]">
+                  Project name
+                </label>
+                <input
+                  type="text"
+                  id="projectName"
+                  name="projectName"
+                  defaultValue={perk.projectName}
+                  required
+                  className="w-full border-[0.5px] border-white/20 bg-[--color-bg] p-3 text-sm focus:border-white/50 focus:outline-none transition-colors"
+                />
+              </div>
+
+              <div className="grid gap-2">
+                <label htmlFor="projectWebsite" className="text-sm font-medium text-[--color-foreground]">
+                  Project website
+                </label>
+                <input
+                  type="url"
+                  id="projectWebsite"
+                  name="projectWebsite"
+                  defaultValue={perk.projectWebsite}
+                  required
+                  className="w-full border-[0.5px] border-white/20 bg-[--color-bg] p-3 text-sm focus:border-white/50 focus:outline-none transition-colors"
+                />
+              </div>
+
+              <div className="grid gap-2">
+                <label htmlFor="projectDescription" className="text-sm font-medium text-[--color-foreground]">
+                  Project description
+                </label>
+                <textarea
+                  id="projectDescription"
+                  name="projectDescription"
+                  defaultValue={perk.projectDescription}
+                  required
+                  rows={3}
+                  className="w-full border-[0.5px] border-white/20 bg-[--color-bg] p-3 text-sm focus:border-white/50 focus:outline-none transition-colors resize-y"
+                />
+              </div>
+
+              <div className="grid gap-2">
+                <label htmlFor="logo" className="text-sm font-medium text-[--color-foreground]">
+                  Upload New Logo <span className="text-[--color-subtle] font-mono text-xs">(optional, overrides existing)</span>
+                </label>
+                <ImageUploadPreview name="logo" existingUrl={perk.logoDataUrl} />
+              </div>
+
+              <div className="my-2 border-t-[0.5px] border-white/10" />
+
+              <div className="grid gap-2">
+                <label htmlFor="offerTitle" className="text-sm font-medium text-[--color-foreground]">
+                  Offer title
+                </label>
+                <input
+                  type="text"
+                  id="offerTitle"
+                  name="offerTitle"
+                  defaultValue={perk.offerTitle}
+                  required
+                  className="w-full border-[0.5px] border-white/20 bg-[--color-bg] p-3 text-sm focus:border-white/50 focus:outline-none transition-colors"
+                />
+              </div>
+
+              <div className="grid gap-2">
+                <label htmlFor="offerTerms" className="text-sm font-medium text-[--color-foreground]">
+                  Offer details & Instructions
+                </label>
+                <textarea
+                  id="offerTerms"
+                  name="offerTerms"
+                  defaultValue={perk.offerTerms}
+                  required
+                  rows={4}
+                  className="w-full border-[0.5px] border-white/20 bg-[--color-bg] p-3 text-sm focus:border-white/50 focus:outline-none transition-colors resize-y"
+                />
+              </div>
+
+              <div className="grid gap-2">
+                <label htmlFor="offerCode" className="text-sm font-medium text-[--color-foreground]">
+                  Offer code <span className="text-[--color-subtle] font-mono text-xs">(optional)</span>
+                </label>
+                <input
+                  type="text"
+                  id="offerCode"
+                  name="offerCode"
+                  defaultValue={perk.offerCode ?? ''}
+                  className="w-full border-[0.5px] border-white/20 bg-[--color-bg] p-3 text-sm font-mono focus:border-white/50 focus:outline-none transition-colors"
+                />
+              </div>
+
+              <div className="mt-6 border-t-[0.5px] border-white/10 pt-6 flex justify-between">
+                <button type="submit" className="btn-primary corner-brackets px-12">
+                  Save Changes
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
-      )}
-      <input
-        accept="image/png,image/jpeg,image/webp,image/svg+xml"
-        className="border border-[--color-border] bg-black px-3 py-2 text-sm text-[--color-foreground] outline-none transition-colors file:mr-4 file:cursor-pointer file:border-0 file:bg-[--color-surface] file:px-3 file:py-1 file:text-sm file:text-[--color-foreground] focus:border-[--color-muted]"
-        name="logo"
-        type="file"
-      />
-      <span className="text-xs leading-relaxed text-[--color-muted]">
-        PNG, JPEG, WebP, or SVG. Max 1 MB.
-      </span>
-    </div>
-  )
-}
-
-function Select<T extends PerkStatus>({
-  label,
-  name,
-  value,
-  options,
-  required,
-}: {
-  label: string
-  name: string
-  value: T
-  options: Array<[T, string]>
-  required?: boolean
-}) {
-  return (
-    <label className="grid gap-2 text-sm text-[--color-subtle]">
-      <FieldLabel label={label} required={required} />
-      <select
-        className="border border-[--color-border] bg-black px-3 py-2 text-sm text-[--color-foreground] outline-none transition-colors focus:border-[--color-muted]"
-        defaultValue={value}
-        name={name}
-        required={required}
-      >
-        {options.map(([optionValue, labelText]) => (
-          <option key={optionValue} value={optionValue}>
-            {labelText}
-          </option>
-        ))}
-      </select>
-    </label>
-  )
-}
-
-function FieldLabel({ label, required }: { label: string; required?: boolean }) {
-  return (
-    <span>
-      {label}
-      {required && (
-        <span aria-hidden="true" className="ml-1 text-[--color-warning]">
-          *
-        </span>
-      )}
-    </span>
+      </div>
+    </PageWrapper>
   )
 }
 
