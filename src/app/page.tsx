@@ -2,6 +2,7 @@ import Link from 'next/link'
 import SolanaAsciiAnimation from '@/components/SolanaAsciiAnimation'
 import { PageWrapper, SectionHeader } from '@/components/AppLayout'
 import { PixelCanvas } from '@/components/ui/PixelCanvas'
+import { CanvasRevealEffect } from '@/components/ui/CanvasRevealEffect'
 import { siteConfig } from '@/config'
 import { getMembers } from '@/lib/members'
 
@@ -28,7 +29,17 @@ export default function HomePage() {
       
       <div className="w-full bg-[--color-panel]/50 relative">
         <SectionHeader current="03" total="03" title="JOIN" />
-        <JoinSection />
+        <div className="relative overflow-hidden">
+          <CanvasRevealEffect
+            colors={[[255, 255, 255], [153, 69, 255], [20, 241, 149]]}
+            dotSize={2}
+            gap={16}
+            speed={1.2}
+          />
+          <div className="relative z-10">
+            <JoinSection />
+          </div>
+        </div>
       </div>
     </PageWrapper>
   )
