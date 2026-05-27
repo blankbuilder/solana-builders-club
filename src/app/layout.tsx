@@ -48,6 +48,30 @@ export const viewport: Viewport = {
   themeColor: '#000000',
 }
 
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Organization',
+      '@id': `${siteConfig.url}/#organization`,
+      name: siteConfig.name,
+      url: siteConfig.url,
+      logo: `${siteConfig.url}/logo.svg`,
+      description: siteConfig.metaDescription,
+      sameAs: [siteConfig.social.x],
+    },
+    {
+      '@type': 'WebSite',
+      '@id': `${siteConfig.url}/#website`,
+      url: siteConfig.url,
+      name: siteConfig.name,
+      description: siteConfig.metaDescription,
+      publisher: { '@id': `${siteConfig.url}/#organization` },
+      inLanguage: 'en',
+    },
+  ],
+}
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -56,6 +80,10 @@ export default function RootLayout({
   return (
     <html lang="en" data-site-domain={siteConfig.domain}>
       <body className="min-h-screen overflow-auto">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
         <PlausibleTracker domain={siteConfig.domain} />
         <Script src="https://tally.so/widgets/embed.js" strategy="afterInteractive" />
         {children}
