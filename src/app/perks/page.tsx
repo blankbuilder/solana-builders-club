@@ -3,6 +3,7 @@ import { getApprovedPerks, isPerksDatabaseConfigured } from '@/lib/perks/queries
 import { getCurrentTelegramSession } from '@/lib/telegram/session'
 import type { Perk } from '@/types'
 import { PageWrapper, SectionHeader } from '@/components/AppLayout'
+import { TelegramToast } from '@/components/TelegramToast'
 
 export const dynamic = 'force-dynamic'
 
@@ -15,33 +16,12 @@ export const metadata: Metadata = {
   },
 }
 
-type SearchParams = Record<string, string | string[] | undefined>
-
-interface PageProps {
-  searchParams: Promise<SearchParams>
-}
-
-const telegramMessages: Record<string, string> = {
-  connected: 'Telegram connected. Member-only claim links are unlocked.',
-}
-
-const telegramErrors: Record<string, string> = {
-  config: 'Telegram login is not configured yet.',
-  state: 'Telegram login expired. Try connecting again.',
-  denied: 'Telegram login was not completed.',
-  token: 'Telegram could not verify the login.',
-  not_member: 'This Telegram account is not currently in the SBC community.',
-  membership: 'Telegram membership could not be checked. Try again shortly.',
-}
-
-export default async function PerksPage({ searchParams }: PageProps) {
-  const params = await searchParams
+export default async function PerksPage() {
   const [session, perks] = await Promise.all([getCurrentTelegramSession(), getApprovedPerks()])
-  const messageKey = firstParam(params.telegram)
-  const errorKey = firstParam(params.telegram_error)
 
   return (
     <PageWrapper>
+      <TelegramToast />
       <div className="w-full relative border-b-[0.5px] border-white/20 flex-1 flex flex-col">
         <SectionHeader current="01" total="01" title="PERKS" />
         
@@ -102,20 +82,6 @@ export default async function PerksPage({ searchParams }: PageProps) {
               </div>
             </aside>
           </section>
-
-          {(messageKey || errorKey) && (
-            <div
-              className={`mb-12 border-[0.5px] p-4 text-sm font-mono ${
-                errorKey
-                  ? 'border-[--color-warning] text-[--color-warning] bg-[--color-warning]/10'
-                  : 'border-[--color-accent-secondary] text-[--color-accent-secondary] bg-[--color-accent-secondary]/10'
-              }`}
-            >
-              {errorKey
-                ? telegramErrors[errorKey] ?? 'Telegram login failed.'
-                : telegramMessages[messageKey ?? ''] ?? 'Telegram connected.'}
-            </div>
-          )}
 
           {!isPerksDatabaseConfigured() ? (
             <div className="border-[0.5px] border-[--color-warning] p-4 text-sm font-mono text-[--color-warning] bg-[--color-warning]/10">
@@ -199,10 +165,6 @@ function PerkCard({ perk, isVerified }: { perk: Perk; isVerified: boolean }) {
       </div>
     </article>
   )
-}
-
-function firstParam(value: string | string[] | undefined): string | undefined {
-  return Array.isArray(value) ? value[0] : value
 }
 
 function formatDate(value: string): string {

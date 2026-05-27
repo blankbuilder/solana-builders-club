@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import Script from 'next/script'
+import { Toaster } from 'sonner'
 import '@fontsource/jetbrains-mono/400.css'
 import '@fontsource/jetbrains-mono/500.css'
 import '@fontsource/jetbrains-mono/600.css'
@@ -87,6 +88,19 @@ export default function RootLayout({
         <PlausibleTracker domain={siteConfig.domain} />
         <Script src="https://tally.so/widgets/embed.js" strategy="afterInteractive" />
         {children}
+        <Toaster
+          theme="dark"
+          position="bottom-right"
+          toastOptions={{
+            classNames: {
+              toast:
+                '!bg-[--color-surface] !border-[0.5px] !border-white/20 !text-[--color-foreground] !font-mono !rounded-none',
+              title: '!text-sm',
+              success: '!text-[--color-accent-secondary]',
+              error: '!text-[--color-warning]',
+            },
+          }}
+        />
       </body>
     </html>
   )

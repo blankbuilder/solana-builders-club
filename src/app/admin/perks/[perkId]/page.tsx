@@ -6,6 +6,7 @@ import { getAdminAuth } from '@/lib/admin'
 import { getPerk } from '@/lib/perks/queries'
 import { PageWrapper, SectionHeader } from '@/components/AppLayout'
 import { ImageUploadPreview } from '@/components/ImageUploadPreview'
+import { AdminToast } from '@/components/AdminToast'
 
 export const dynamic = 'force-dynamic'
 
@@ -18,19 +19,12 @@ export const metadata: Metadata = {
   },
 }
 
-type SearchParams = Record<string, string | string[] | undefined>
-
 interface PageProps {
   params: Promise<{ perkId: string }>
-  searchParams: Promise<SearchParams>
 }
 
-export default async function EditPerkPage({ params, searchParams }: PageProps) {
-  const [{ perkId }, queryParams, auth] = await Promise.all([
-    params,
-    searchParams,
-    getAdminAuth(),
-  ])
+export default async function EditPerkPage({ params }: PageProps) {
+  const [{ perkId }, auth] = await Promise.all([params, getAdminAuth()])
 
   if (auth.status !== 'authorized') {
     return (
@@ -53,14 +47,12 @@ export default async function EditPerkPage({ params, searchParams }: PageProps) 
     notFound()
   }
 
-  const adminMessage = firstParam(queryParams.admin)
-  const adminError = firstParam(queryParams.admin_error)
-
   return (
     <PageWrapper>
+      <AdminToast />
       <div className="w-full relative border-b-[0.5px] border-white/20 flex-1 flex flex-col">
         <SectionHeader current="ADMIN" title="EDIT PERK" />
-        
+
         <div className="px-6 py-12 md:py-16 mx-auto w-full max-w-3xl flex-1">
           <div className="mb-12 flex justify-between items-end flex-wrap gap-4">
             <div>
@@ -75,17 +67,6 @@ export default async function EditPerkPage({ params, searchParams }: PageProps) 
               </p>
             </div>
           </div>
-
-          {adminMessage && (
-            <div className="mb-8 border-[0.5px] border-[--color-accent-secondary] p-4 text-sm font-mono text-[--color-accent-secondary] bg-[--color-accent-secondary]/10">
-              Perk updated successfully.
-            </div>
-          )}
-          {adminError && (
-            <div className="mb-8 border-[0.5px] border-[--color-warning] p-4 text-sm font-mono text-[--color-warning] bg-[--color-warning]/10">
-              {adminError}
-            </div>
-          )}
 
           <div className="border-[0.5px] border-white/20 bg-[--color-surface] p-6 md:p-8">
             <div className="mb-8 flex flex-col gap-4 border-b-[0.5px] border-white/20 pb-6">
@@ -297,10 +278,6 @@ export default async function EditPerkPage({ params, searchParams }: PageProps) 
       </div>
     </PageWrapper>
   )
-}
-
-function firstParam(value: string | string[] | undefined): string | undefined {
-  return Array.isArray(value) ? value[0] : value
 }
 
 const mimeExtensions: Record<string, string> = {

@@ -8,6 +8,7 @@ import { getAdminAuth } from '@/lib/admin'
 import { getAdminPerks, isPerksDatabaseConfigured } from '@/lib/perks/queries'
 import type { Perk, PerkStatus } from '@/types'
 import { PageWrapper, SectionHeader } from '@/components/AppLayout'
+import { AdminToast } from '@/components/AdminToast'
 
 export const dynamic = 'force-dynamic'
 
@@ -19,22 +20,15 @@ export const metadata: Metadata = {
   },
 }
 
-type SearchParams = Record<string, string | string[] | undefined>
-
-interface PageProps {
-  searchParams: Promise<SearchParams>
-}
-
-export default async function AdminPerksPage({ searchParams }: PageProps) {
-  const [params, auth] = await Promise.all([searchParams, getAdminAuth()])
-  const adminMessage = firstParam(params.admin)
-  const adminError = firstParam(params.admin_error)
+export default async function AdminPerksPage() {
+  const auth = await getAdminAuth()
 
   return (
     <PageWrapper>
+      <AdminToast />
       <div className="w-full relative border-b-[0.5px] border-white/20 flex-1 flex flex-col">
         <SectionHeader current="ADMIN" title="PERK MODERATION" />
-        
+
         <div className="px-6 py-12 md:py-16 mx-auto w-full max-w-7xl flex-1">
           <div className="mb-12 flex justify-between items-end flex-wrap gap-4">
             <div>
@@ -54,7 +48,7 @@ export default async function AdminPerksPage({ searchParams }: PageProps) {
           ) : !isPerksDatabaseConfigured() ? (
             <Notice tone="warning">`DATABASE_URL` is required before perks can be managed.</Notice>
           ) : (
-            <AdminPerksContent adminMessage={adminMessage} adminError={adminError} />
+            <AdminPerksContent />
           )}
         </div>
       </div>
@@ -62,13 +56,7 @@ export default async function AdminPerksPage({ searchParams }: PageProps) {
   )
 }
 
-async function AdminPerksContent({
-  adminMessage,
-  adminError,
-}: {
-  adminMessage?: string
-  adminError?: string
-}) {
+async function AdminPerksContent() {
   const perks = await getAdminPerks()
   const counts = countByStatus(perks)
   const pendingPerks = perks.filter((perk) => perk.status === 'submitted')
@@ -76,9 +64,6 @@ async function AdminPerksContent({
 
   return (
     <>
-      {adminMessage && <Notice tone="success">Perk updated.</Notice>}
-      {adminError && <Notice tone="warning">{adminError}</Notice>}
-
       <div className="mb-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
         {(['submitted', 'approved', 'rejected', 'paused', 'archived'] satisfies PerkStatus[]).map(
           (status) => (
@@ -403,8 +388,4 @@ function formatDate(value: string): string {
     day: 'numeric',
     year: 'numeric',
   }).format(new Date(value))
-}
-
-function firstParam(value: string | string[] | undefined): string | undefined {
-  return Array.isArray(value) ? value[0] : value
 }
