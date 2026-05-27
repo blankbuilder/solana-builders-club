@@ -159,7 +159,7 @@ export default async function Image() {
               flexDirection: 'column',
               width: '62%',
               height: '100%',
-              padding: '60px 60px 60px 72px',
+              padding: '40px 60px 80px 72px',
               zIndex: 10,
               justifyContent: 'center',
             }}
@@ -169,7 +169,7 @@ export default async function Image() {
               style={{
                 display: 'flex',
                 alignItems: 'center',
-                fontSize: '18px',
+                fontSize: '24px',
                 fontFamily: '"JetBrains Mono"',
                 color: '#ffffff',
                 marginBottom: '36px',
