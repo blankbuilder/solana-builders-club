@@ -98,7 +98,7 @@ export function CanvasRevealEffect({
           const dy = j - cy
           const dist = Math.sqrt(dx * dx + dy * dy)
           const showOffset = hash2(i + 1, j + 1)
-          const reveal = dist * 0.05 + showOffset * 0.3
+          const reveal = dist * 0.02 + showOffset * 0.15
 
           if (t < reveal) continue
 
