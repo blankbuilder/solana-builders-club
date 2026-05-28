@@ -113,7 +113,7 @@ function PerkCard({ perk, isVerified }: { perk: Perk; isVerified: boolean }) {
         <div className="flex items-center gap-4">
           <div className="flex h-12 w-12 items-center justify-center border-[0.5px] border-white/20 bg-[--color-bg]">
             {perk.logoDataUrl ? (
-              <img src={perk.logoDataUrl} alt="" className="h-7 w-7 object-contain opacity-80 filter grayscale group-hover:grayscale-0 transition-all duration-500" />
+              <img src={perk.logoDataUrl} alt="" className="h-7 w-7 object-contain" />
             ) : (
               <span className="text-xs font-mono text-[--color-muted] group-hover:text-[--color-foreground] transition-colors">{initials(perk.projectName)}</span>
             )}
