@@ -124,9 +124,19 @@ function PerkCard({ perk, isVerified }: { perk: Perk; isVerified: boolean }) {
               href={perk.projectWebsite}
               rel="noopener noreferrer"
               target="_blank"
-              className="text-[10px] font-mono uppercase tracking-widest text-[--color-subtle] transition-colors hover:text-[--color-foreground]"
+              className="inline-flex items-center gap-1 text-[10px] font-mono tracking-wide text-[--color-subtle] transition-colors hover:text-[--color-foreground]"
             >
-              Project website
+              {formatUrl(perk.projectWebsite)}
+              <svg
+                className="h-2.5 w-2.5 shrink-0"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                aria-hidden="true"
+              >
+                <path d="M7 17 17 7M9 7h8v8" />
+              </svg>
             </a>
           </div>
         </div>
@@ -173,6 +183,13 @@ function formatDate(value: string): string {
     day: 'numeric',
     year: 'numeric',
   }).format(new Date(value))
+}
+
+function formatUrl(value: string): string {
+  return value
+    .replace(/^https?:\/\//, '')
+    .replace(/^www\./, '')
+    .replace(/\/$/, '')
 }
 
 function termsList(value: string): string[] {
