@@ -4,6 +4,7 @@ import {
   setPerkFeaturedAction,
   setPerkStatusAction,
 } from '@/app/admin/perks/actions'
+import { PerkReorderList } from '@/app/admin/perks/PerkReorderList'
 import { getAdminAuth } from '@/lib/admin'
 import { getAdminPerks, isPerksDatabaseConfigured } from '@/lib/perks/queries'
 import type { Perk, PerkStatus } from '@/types'
@@ -61,6 +62,9 @@ async function AdminPerksContent() {
   const counts = countByStatus(perks)
   const pendingPerks = perks.filter((perk) => perk.status === 'submitted')
   const processedPerks = perks.filter((perk) => perk.status !== 'submitted')
+  const approvedPerks = perks
+    .filter((perk) => perk.status === 'approved')
+    .sort((a, b) => a.sortOrder - b.sortOrder || (a.createdAt < b.createdAt ? 1 : -1))
 
   return (
     <>
@@ -98,6 +102,20 @@ async function AdminPerksContent() {
                   <PendingPerkCard key={perk.id} perk={perk} />
                 ))}
               </div>
+            </section>
+          )}
+
+          {approvedPerks.length > 1 && (
+            <section className="mb-12">
+              <div className="mb-6 flex items-baseline justify-between gap-4 border-b-[0.5px] border-white/20 pb-4">
+                <h2 className="text-[11px] uppercase tracking-widest text-[--color-foreground] font-mono">
+                  Published order &mdash; {approvedPerks.length}
+                </h2>
+                <p className="text-[10px] uppercase tracking-widest text-[--color-muted] font-mono">
+                  Drag to set public /perks order
+                </p>
+              </div>
+              <PerkReorderList perks={approvedPerks} />
             </section>
           )}
 

@@ -1,4 +1,4 @@
-import { and, desc, eq } from 'drizzle-orm'
+import { and, asc, desc, eq, sql } from 'drizzle-orm'
 import { getDb, isDatabaseConfigured } from '@/lib/db/client'
 import { perkEvents, perks, type NewPerkRecord, type PerkRecord } from '@/lib/db/schema'
 import type { AdminPerkFormInput, PerkFormInput } from '@/lib/perks/validation'
@@ -17,7 +17,7 @@ export async function getApprovedPerks(): Promise<Perk[]> {
     .select()
     .from(perks)
     .where(eq(perks.status, 'approved'))
-    .orderBy(desc(perks.featured), desc(perks.approvedAt), desc(perks.createdAt))
+    .orderBy(asc(perks.sortOrder), desc(perks.createdAt))
 
   return rows.map(mapPerk)
 }
@@ -197,6 +197,30 @@ export async function setPerkFeatured({
   })
 }
 
+export async function reorderApprovedPerks({
+  orderedIds,
+  actorTelegramId,
+}: {
+  orderedIds: string[]
+  actorTelegramId: string
+}): Promise<void> {
+  if (orderedIds.length === 0) {
+    return
+  }
+
+  const db = getDb()
+  const rows = orderedIds.map((id, index) => sql`(${id}::uuid, ${index}::int)`)
+
+  await db.execute(sql`
+    UPDATE ${perks} AS p
+    SET sort_order = v.ord,
+        updated_at = now(),
+        updated_by_telegram_id = ${actorTelegramId}
+    FROM (VALUES ${sql.join(rows, sql`, `)}) AS v(id, ord)
+    WHERE p.id = v.id AND p.status = 'approved'
+  `)
+}
+
 function toNewPerkRecord(input: PerkFormInput): NewPerkRecord {
   return {
     telegramUsername: input.telegramUsername,
@@ -223,6 +247,7 @@ function mapPerk(row: PerkRecord): Perk {
     offerCode: row.offerCode,
     status: row.status,
     featured: row.featured,
+    sortOrder: row.sortOrder,
     rejectionReason: row.rejectionReason,
     createdAt: row.createdAt.toISOString(),
     updatedAt: row.updatedAt.toISOString(),

@@ -3,6 +3,7 @@ import {
   bigint,
   boolean,
   index,
+  integer,
   jsonb,
   pgEnum,
   pgTable,
@@ -44,6 +45,7 @@ export const perks = pgTable(
     offerCode: text('offer_code'),
     status: perkStatusEnum('status').notNull().default('submitted'),
     featured: boolean('featured').notNull().default(false),
+    sortOrder: integer('sort_order').notNull().default(0),
     rejectionReason: text('rejection_reason'),
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
     updatedAt: timestamp('updated_at', { withTimezone: true })
@@ -57,6 +59,7 @@ export const perks = pgTable(
   (table) => [
     index('perks_status_created_at_idx').on(table.status, table.createdAt),
     index('perks_featured_idx').on(table.featured),
+    index('perks_status_sort_order_idx').on(table.status, table.sortOrder),
   ]
 )
 

@@ -17,6 +17,7 @@ export interface Perk {
   offerCode: string | null
   status: PerkStatus
   featured: boolean
+  sortOrder: number
   rejectionReason: string | null
   createdAt: string
   updatedAt: string

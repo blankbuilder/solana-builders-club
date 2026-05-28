@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { requireAdminSession } from '@/lib/admin'
 import {
+  reorderApprovedPerks,
   setPerkFeatured,
   setPerkStatus,
   updateAdminPerk,
@@ -85,6 +86,36 @@ export async function updatePerkAction(formData: FormData) {
   }
 
   redirect(redirectTo)
+}
+
+const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
+export async function reorderPerksAction(
+  orderedIds: string[]
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  try {
+    const session = await requireAdminSession()
+
+    if (!Array.isArray(orderedIds) || orderedIds.length === 0) {
+      throw new Error('No perks to reorder')
+    }
+
+    if (!orderedIds.every((id) => typeof id === 'string' && uuidPattern.test(id))) {
+      throw new Error('Invalid perk identifier')
+    }
+
+    await reorderApprovedPerks({
+      orderedIds,
+      actorTelegramId: session.telegramUserId,
+    })
+
+    revalidatePath('/perks')
+    revalidatePath('/admin/perks')
+
+    return { ok: true }
+  } catch (error) {
+    return { ok: false, error: parseFormError(error) }
+  }
 }
 
 function requiredFormValue(formData: FormData, key: string): string {
