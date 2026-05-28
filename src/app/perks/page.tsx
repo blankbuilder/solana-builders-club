@@ -138,7 +138,7 @@ function PerkCard({ perk, isVerified }: { perk: Perk; isVerified: boolean }) {
       <h2 className="mb-4 text-xl font-semibold leading-snug text-[--color-foreground]">
         {perk.offerTitle}
       </h2>
-      <p className="mb-6 text-sm leading-relaxed text-[--color-subtle] flex-1">
+      <p className="mb-6 whitespace-pre-line text-sm leading-relaxed text-[--color-subtle] flex-1">
         {perk.projectDescription}
       </p>
 
@@ -178,7 +178,7 @@ function formatDate(value: string): string {
 function termsList(value: string): string[] {
   return value
     .split('\n')
-    .map((term) => term.trim())
+    .map((term) => term.trim().replace(/^[-*•]\s*/, ''))
     .filter(Boolean)
 }
 
